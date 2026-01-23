@@ -23,3 +23,5 @@
 1/23/2026 - Rook and Queen fully works
 
 1/23/2026 - King fully works
+
+1/23/2026 - Knight fully works
