@@ -5,3 +5,5 @@
 1/20/2026 - Created board, creating and getting chess piece, added position logic, made empty chessmoves list for now, ChessPosition now works
 
 1/21/20206 - Implemented piece color and piece type
+
+1/23/2026 - Implemented equals() and hashCode() in multiple classes. Bishop movements now work.
