@@ -11,3 +11,5 @@
 1/23/2026 - Implemented Rook
 
 1/23/2026 - Implemented Queen
+
+1/23/2026 - Implemented King

@@ -141,6 +141,23 @@ public class ChessPiece {
         return moves;
     }
 
+    public List KingMoves(ChessPosition myPosition){
+        List moves = new ArrayList<>();
+
+        int positioni = myPosition.getRow();
+        int positionj = myPosition.getColumn();;
+
+        for(int i = positioni-1;i <= positioni+1; i++){
+            for(int j = positionj-1;j <= positionj+1; j++){
+                if((i >= 1 && i <= 8) && (j >= 1 && j <= 8) && !(i == positioni && j == positionj)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                }
+            }
+        }
+
+        return moves;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.BISHOP){
@@ -153,6 +170,9 @@ public class ChessPiece {
             List temp =  RookMoves(myPosition);
             temp.addAll(BishopMoves(myPosition));
             return temp;
+        }
+        if (piece.getPieceType() == PieceType.KING){
+            return KingMoves(myPosition);
         }
         return List.of();
     }
