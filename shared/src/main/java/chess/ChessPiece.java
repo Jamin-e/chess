@@ -208,6 +208,25 @@ public class ChessPiece {
         return moves;
     }
 
+    public List PawnMoves(ChessPosition myPosition){
+        List moves = new ArrayList<>();
+
+        if(pieceColor == ChessGame.TeamColor.BLACK){
+            if(myPosition.getRow() == 7){
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-2, myPosition.getColumn()), null));
+            }
+            moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()), null));
+        }
+        if(pieceColor == ChessGame.TeamColor.WHITE){
+            if(myPosition.getRow() == 2){
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+2, myPosition.getColumn()), null));
+            }
+            moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()), null));
+        }
+
+        return moves;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.BISHOP){
@@ -226,6 +245,9 @@ public class ChessPiece {
         }
         if (piece.getPieceType() == PieceType.KNIGHT){
             return KnightMoves(myPosition);
+        }
+        if (piece.getPieceType() == PieceType.PAWN){
+            return PawnMoves(myPosition);
         }
         return List.of();
     }

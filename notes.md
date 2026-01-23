@@ -15,3 +15,5 @@
 1/23/2026 - Implemented King
 
 1/23/2026 - Implemented Knight
+
+1/23/2026 - Pawn
