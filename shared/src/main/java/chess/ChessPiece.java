@@ -68,41 +68,82 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public List BishopMoves(ChessPosition myPosition) {
+    public List BishopMoves(ChessBoard board, ChessPosition myPosition) {
         List moves = new ArrayList<>();
 
         int i = myPosition.getRow()+1;
         int j = myPosition.getColumn()+1;
         while (i <= 8 && j <= 8) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            i++;
-            j++;
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                i++;
+                j++;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
+
 
         i = myPosition.getRow()-1;
         j = myPosition.getColumn()+1;
         while (i >= 1 && j <= 8) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            i--;
-            j++;
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                i--;
+                j++;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
 
         i = myPosition.getRow()+1;
         j = myPosition.getColumn()-1;
         while (i <= 8 && j >= 1) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            i++;
-            j--;
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                i++;
+                j--;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
 
         i = myPosition.getRow()-1;
         j = myPosition.getColumn()-1;
-        while (i >= 1 && j >= 1) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            i--;
-            j--;
-
+        while (i >=1 && j >=1) {
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                i--;
+                j--;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
+
         return moves;
     }
 
@@ -230,14 +271,14 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.BISHOP){
-            return BishopMoves(myPosition);
+            return BishopMoves(board, myPosition);
         }
         if (piece.getPieceType() == PieceType.ROOK){
             return RookMoves(myPosition);
         }
         if (piece.getPieceType() == PieceType.QUEEN){
             List temp =  RookMoves(myPosition);
-            temp.addAll(BishopMoves(myPosition));
+            temp.addAll(BishopMoves( board, myPosition));
             return temp;
         }
         if (piece.getPieceType() == PieceType.KING){

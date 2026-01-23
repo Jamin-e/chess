@@ -17,3 +17,5 @@
 1/23/2026 - Implemented Knight
 
 1/23/2026 - Pawn
+
+1/23/2026 - Bishop fully works
