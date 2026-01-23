@@ -19,3 +19,5 @@
 1/23/2026 - Pawn
 
 1/23/2026 - Bishop fully works
+
+1/23/2026 - Rook and Queen fully works

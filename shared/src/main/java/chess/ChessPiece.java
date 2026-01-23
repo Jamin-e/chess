@@ -147,35 +147,75 @@ public class ChessPiece {
         return moves;
     }
 
-    public List RookMoves(ChessPosition myPosition){
+    public List RookMoves(ChessBoard board, ChessPosition myPosition){
         List moves = new ArrayList<>();
 
         int i = myPosition.getRow()+1;
-        int j = myPosition.getColumn();
+        int j = myPosition.getColumn();;
         while (i <= 8) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            i++;
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                i++;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
 
         i = myPosition.getRow()-1;
         j = myPosition.getColumn();
         while (i >= 1) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            i--;
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                i--;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
 
         i = myPosition.getRow();
         j = myPosition.getColumn()+1;
         while (j <= 8) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            j++;
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                j++;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
 
         i = myPosition.getRow();
         j = myPosition.getColumn()-1;
         while (j >= 1) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            j--;
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                j--;
+            }
+            else if(otherPiece.pieceColor==this.pieceColor){
+                break;
+            }
+            else{
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+                break;
+            }
         }
 
 
@@ -274,10 +314,10 @@ public class ChessPiece {
             return BishopMoves(board, myPosition);
         }
         if (piece.getPieceType() == PieceType.ROOK){
-            return RookMoves(myPosition);
+            return RookMoves(board, myPosition);
         }
         if (piece.getPieceType() == PieceType.QUEEN){
-            List temp =  RookMoves(myPosition);
+            List temp =  RookMoves(board, myPosition);
             temp.addAll(BishopMoves( board, myPosition));
             return temp;
         }
