@@ -158,6 +158,56 @@ public class ChessPiece {
         return moves;
     }
 
+    public List KnightMoves(ChessPosition myPosition){
+        List moves = new ArrayList<>();
+
+        int i = myPosition.getRow()+2;
+        int j = myPosition.getColumn();
+        if (i <= 8) {
+            if (j+1 <= 8){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
+            }
+            if (j-1 >= 1){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
+            }
+        }
+
+        i = myPosition.getRow()-2;
+        j = myPosition.getColumn();
+        if (i >= 1) {
+            if (j+1 <= 8){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
+            }
+            if (j-1 >= 1){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
+            }
+        }
+
+        i = myPosition.getRow();
+        j = myPosition.getColumn()+2;
+        if (j <= 8) {
+            if (i+1 <= 8){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
+            }
+            if (i-1 >= 1){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
+            }
+        }
+
+        i = myPosition.getRow();
+        j = myPosition.getColumn()-2;
+        if (j >= 1) {
+            if (i+1 <= 8){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
+            }
+            if (i-1 >= 1){
+                moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
+            }
+        }
+
+        return moves;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.BISHOP){
@@ -173,6 +223,9 @@ public class ChessPiece {
         }
         if (piece.getPieceType() == PieceType.KING){
             return KingMoves(myPosition);
+        }
+        if (piece.getPieceType() == PieceType.KNIGHT){
+            return KnightMoves(myPosition);
         }
         return List.of();
     }
