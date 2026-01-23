@@ -9,3 +9,5 @@
 1/23/2026 - Implemented equals() and hashCode() in multiple classes. Bishop movements now work.
 
 1/23/2026 - Implemented Rook
+
+1/23/2026 - Implemented Queen

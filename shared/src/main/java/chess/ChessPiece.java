@@ -149,6 +149,11 @@ public class ChessPiece {
         if (piece.getPieceType() == PieceType.ROOK){
             return RookMoves(myPosition);
         }
+        if (piece.getPieceType() == PieceType.QUEEN){
+            List temp =  RookMoves(myPosition);
+            temp.addAll(BishopMoves(myPosition));
+            return temp;
+        }
         return List.of();
     }
 }
