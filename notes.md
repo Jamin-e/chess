@@ -7,3 +7,5 @@
 1/21/20206 - Implemented piece color and piece type
 
 1/23/2026 - Implemented equals() and hashCode() in multiple classes. Bishop movements now work.
+
+1/23/2026 - Implemented Rook

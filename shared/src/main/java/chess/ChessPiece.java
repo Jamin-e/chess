@@ -106,11 +106,48 @@ public class ChessPiece {
         return moves;
     }
 
+    public List RookMoves(ChessPosition myPosition){
+        List moves = new ArrayList<>();
+
+        int i = myPosition.getRow()+1;
+        int j = myPosition.getColumn();
+        while (i <= 8) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+            i++;
+        }
+
+        i = myPosition.getRow()-1;
+        j = myPosition.getColumn();
+        while (i >= 1) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+            i--;
+        }
+
+        i = myPosition.getRow();
+        j = myPosition.getColumn()+1;
+        while (j <= 8) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+            j++;
+        }
+
+        i = myPosition.getRow();
+        j = myPosition.getColumn()-1;
+        while (j >= 1) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+            j--;
+        }
+
+
+        return moves;
+    }
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.BISHOP){
             return BishopMoves(myPosition);
+        }
+        if (piece.getPieceType() == PieceType.ROOK){
+            return RookMoves(myPosition);
         }
         return List.of();
     }
