@@ -67,16 +67,9 @@ public class ChessBoard {
                 new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK)
         };
 
-        squares[1] = new ChessPiece[]{
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN)
-        };
+        for (int j = 0; j < 8; j++) {
+            squares[1][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        }
 
         for (int i = 2; i < 6; i++) {
             for (int j = 0; j < 8; j++) {
@@ -84,16 +77,9 @@ public class ChessBoard {
             }
         }
 
-        squares[6] = new ChessPiece[]{
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN),
-                new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN)
-        };
+        for (int j = 0; j < 8; j++) {
+            squares[6][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        }
 
         squares[7] = new ChessPiece[]{
                 new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK),

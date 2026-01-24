@@ -35,3 +35,5 @@
 1/23/2026 - Implemented board reset
 
 1/23/2026 - Fixed board reset
+
+1/23/2026 - cleaned up code
