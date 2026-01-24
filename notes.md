@@ -27,3 +27,5 @@
 1/23/2026 - Knight fully works
 
 1/23/2026 - More pawn implementation
+
+1/23/2026 - Pawn nearly works
