@@ -25,3 +25,5 @@
 1/23/2026 - King fully works
 
 1/23/2026 - Knight fully works
+
+1/23/2026 - More pawn implementation
