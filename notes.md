@@ -53,3 +53,5 @@
 2/4/2026 - Fixed clone()(?) is now deepCopy()
 
 2/4/2026 - Started implementing helper functions for isInCheck()
+
+2/4/2026 - Started tracking King position

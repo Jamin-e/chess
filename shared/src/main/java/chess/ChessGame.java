@@ -16,6 +16,8 @@ public class ChessGame {
     private TeamColor current_turn = TeamColor.WHITE;
     private ChessBoard board = new ChessBoard();
     List moves;
+    private ChessPosition white_king = new ChessPosition(1,5);
+    private ChessPosition black_king = new ChessPosition(8,5);
 
     public ChessGame() {
     this.board.resetBoard();
@@ -108,7 +110,6 @@ public class ChessGame {
             ChessPiece promoted = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
             temp.addPiece(move.getEndPosition(),promoted);
         }
-        setTeamTurn(piece.getTeamColor());
     }
     /**
      * Makes a move in a chess game
@@ -121,6 +122,15 @@ public class ChessGame {
         board.addPiece(move.getStartPosition(),null);
         if (move.getPromotionPiece() == null) {
             board.addPiece(move.getEndPosition(), piece);
+            if(piece.getPieceType() == ChessPiece.PieceType.KING){
+                if(piece.getTeamColor() == TeamColor.BLACK){
+                    black_king = move.getEndPosition();
+                }
+                else{
+                    white_king = move.getEndPosition();
+                }
+
+            }
         }
         else{
             ChessPiece promoted = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
@@ -136,9 +146,16 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        //if(BishopCheck(board,) == true){
-        //    return true;
-        //}
+        ChessPosition king;
+        if(teamColor == TeamColor.BLACK){
+             king = black_king;
+        }
+        else{
+            king = white_king;
+        }
+        if(BishopCheck(board,king,teamColor) == true){
+            return true;
+        }
         return false;
     }
 
