@@ -41,3 +41,5 @@
 2/4/2026 - Sped up an implimentation
 
 2/4/2026 - Implemented getTeamTurn() and setTeamTurn as well as initial ChessGame vars
+
+2/4/2026 - Implemented setBoard() and getBoard()
