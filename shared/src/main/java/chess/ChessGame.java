@@ -153,7 +153,10 @@ public class ChessGame {
         else{
             king = white_king;
         }
-        if(BishopCheck(board,king,teamColor) == true){
+        if(BishopCheck(board,king,teamColor)){
+            return true;
+        }
+        if(RookCheck(board,king,teamColor)){
             return true;
         }
         return false;
@@ -167,9 +170,14 @@ public class ChessGame {
         while (i <= 8 && j <= 8) {
             ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
             if(otherPiece == null) {
+            i++;
+            j++;
             }
             else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.BISHOP || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
                 return true;
+            }
+            else{
+                break;
             }
         }
 
@@ -179,9 +187,14 @@ public class ChessGame {
         while (i >= 1 && j <= 8) {
             ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
             if(otherPiece == null) {
+            i--;
+            j++;
             }
             else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.BISHOP || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
                 return true;
+            }
+            else{
+                break;
             }
         }
 
@@ -190,9 +203,14 @@ public class ChessGame {
         while (i <= 8 && j >= 1) {
             ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
             if(otherPiece == null) {
+                i++;
+                j--;
             }
             else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.BISHOP || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
                 return true;
+            }
+            else{
+                break;
             }
         }
 
@@ -201,11 +219,82 @@ public class ChessGame {
         while (i >=1 && j >=1) {
             ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
             if(otherPiece == null) {
+                i--;
+                j--;
             }
             else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.BISHOP || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
                 return true;
             }
+            else{
+                break;
+            }
         }
+
+        return false;
+    }
+
+    public boolean RookCheck(ChessBoard board, ChessPosition myPosition, TeamColor pieceColor){
+
+        int i = myPosition.getRow()+1;
+        int j = myPosition.getColumn();;
+        while (i <= 8) {
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                i++;
+            }
+            else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.ROOK || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
+                return true;
+            }
+            else{
+                break;
+            }
+        }
+
+        i = myPosition.getRow()-1;
+        j = myPosition.getColumn();
+        while (i >= 1) {
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                i--;
+            }
+            else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.ROOK || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
+                return true;
+            }
+            else{
+                break;
+            }
+        }
+
+        i = myPosition.getRow();
+        j = myPosition.getColumn()+1;
+        while (j <= 8) {
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                j++;
+            }
+            else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.ROOK || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
+                return true;
+            }
+            else{
+                break;
+            }
+        }
+
+        i = myPosition.getRow();
+        j = myPosition.getColumn()-1;
+        while (j >= 1) {
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
+            if(otherPiece == null) {
+                j--;
+            }
+            else if(otherPiece.getTeamColor()!=pieceColor && (otherPiece.getPieceType() == ChessPiece.PieceType.ROOK || otherPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
+                return true;
+            }
+            else{
+                break;
+            }
+        }
+
 
         return false;
     }

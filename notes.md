@@ -55,3 +55,5 @@
 2/4/2026 - Started implementing helper functions for isInCheck()
 
 2/4/2026 - Started tracking King position
+
+2/4/2026 - another helper function for check
