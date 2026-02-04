@@ -1,6 +1,9 @@
 package chess;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -12,9 +15,11 @@ public class ChessGame {
 
     private TeamColor current_turn = TeamColor.WHITE;
     private ChessBoard board = new ChessBoard();
+    List moves;
 
     public ChessGame() {
     this.board.resetBoard();
+    moves = new ArrayList<>();
     }
 
     /**
@@ -38,6 +43,29 @@ public class ChessGame {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return current_turn == chessGame.current_turn && Objects.equals(board, chessGame.board) && Objects.equals(moves, chessGame.moves);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(current_turn, board, moves);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "current_turn=" + current_turn +
+                ", board=" + board +
+                ", moves=" + moves +
+                '}';
+    }
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -54,7 +82,14 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if(piece == null){
+            return null;
+        }
+        else {
+            moves.addAll(piece.pieceMoves(board, startPosition));
+            return moves;
+        }
     }
 
     /**
