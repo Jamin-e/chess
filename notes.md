@@ -37,3 +37,5 @@
 1/23/2026 - Fixed board reset
 
 1/23/2026 - cleaned up code
+
+2/4/2026 - Sped up an implimentation

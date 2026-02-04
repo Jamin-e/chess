@@ -226,10 +226,11 @@ public class ChessPiece {
 
         int positioni = myPosition.getRow();
         int positionj = myPosition.getColumn();
+        ChessPiece otherPiece = board.getPiece(new ChessPosition(positioni, positionj));
         for (int i = positioni - 1; i <= positioni + 1; i++) {
             for (int j = positionj - 1; j <= positionj + 1; j++) {
                 if ((i >= 1 && i <= 8) && (j >= 1 && j <= 8) && !(i == positioni && j == positionj)) {
-                    ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j));
+                    otherPiece = board.getPiece(new ChessPosition(i,j));
                     if (otherPiece == null) {
                         moves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
                     } else if (otherPiece.pieceColor == this.pieceColor) {
