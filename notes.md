@@ -39,3 +39,5 @@
 1/23/2026 - cleaned up code
 
 2/4/2026 - Sped up an implimentation
+
+2/4/2026 - Implemented getTeamTurn() and setTeamTurn as well as initial ChessGame vars
