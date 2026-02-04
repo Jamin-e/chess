@@ -47,3 +47,5 @@
 2/4/2026 - Initial implementation of ValidMoves()
 
 2/4/2026 - Implementation of MakeMove()
+
+2/4/2026 - Implemented clone() for ChessBoard

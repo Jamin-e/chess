@@ -86,6 +86,7 @@ public class ChessGame {
         if(piece != null){
             moves.addAll(piece.pieceMoves(board, startPosition));
             return moves;
+
         }
         return null;
     }
@@ -106,6 +107,7 @@ public class ChessGame {
             ChessPiece promoted = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
             board.addPiece(move.getEndPosition(),promoted);
         }
+        setTeamTurn(piece.getTeamColor());
     }
 
     /**
