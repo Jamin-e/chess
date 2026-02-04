@@ -57,3 +57,5 @@
 2/4/2026 - Started tracking King position
 
 2/4/2026 - another helper function for check
+
+2/4/2026 - another one
