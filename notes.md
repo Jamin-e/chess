@@ -51,3 +51,5 @@
 2/4/2026 - Implemented clone() for ChessBoard
 
 2/4/2026 - Fixed clone()(?) is now deepCopy()
+
+2/4/2026 - Started implementing helper functions for isInCheck()
