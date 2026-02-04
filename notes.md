@@ -45,3 +45,5 @@
 2/4/2026 - Implemented setBoard() and getBoard()
 
 2/4/2026 - Initial implementation of ValidMoves()
+
+2/4/2026 - Implementation of MakeMove()
