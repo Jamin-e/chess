@@ -49,3 +49,5 @@
 2/4/2026 - Implementation of MakeMove()
 
 2/4/2026 - Implemented clone() for ChessBoard
+
+2/4/2026 - Fixed clone()(?) is now deepCopy()

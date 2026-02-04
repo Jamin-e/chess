@@ -85,8 +85,8 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(startPosition);
         if(piece != null){
             moves.addAll(piece.pieceMoves(board, startPosition));
+            ChessBoard temp = board.deepCopy();
             return moves;
-
         }
         return null;
     }
