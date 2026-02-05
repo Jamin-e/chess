@@ -16,6 +16,7 @@ public class ChessGame {
     private TeamColor current_turn = TeamColor.WHITE;
     private ChessBoard board = new ChessBoard();
     List moves;
+    //track king positions to easily check for check or mate
     private ChessPosition white_king = new ChessPosition(1,5);
     private ChessPosition black_king = new ChessPosition(8,5);
 
@@ -86,29 +87,33 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
         if(piece != null){
+            //get all moves before check checks
             moves.addAll(piece.pieceMoves(board, startPosition));
-            ChessBoard temp = board.deepCopy();
+            //make a copy of the board and for all moves make sure it doesn't put own king in check or can't get king out of check
+            ChessBoard original_copy = board.deepCopy();
             for(Object move : moves){
-                makeMovetemp((ChessMove) move, temp);
+                makeMovetemp((ChessMove) move);
                 if(isInCheck(piece.getTeamColor())){
                     moves.remove(move);
                 }
+                board = original_copy;
             }
+            board = original_copy;
 
             return moves;
         }
         return null;
     }
 
-    public void makeMovetemp(ChessMove move, ChessBoard temp) {
-        ChessPiece piece = temp.getPiece(move.getStartPosition());
-        temp.addPiece(move.getStartPosition(),null);
+    public void makeMovetemp(ChessMove move) {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        board.addPiece(move.getStartPosition(),null);
         if (move.getPromotionPiece() == null) {
-            temp.addPiece(move.getEndPosition(), piece);
+            board.addPiece(move.getEndPosition(), piece);
         }
         else{
             ChessPiece promoted = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
-            temp.addPiece(move.getEndPosition(),promoted);
+            board.addPiece(move.getEndPosition(),promoted);
         }
     }
     /**
@@ -118,7 +123,18 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if(board.getPiece(move.getStartPosition()) == null){
+            throw new InvalidMoveException("empty");
+        }
         ChessPiece piece = board.getPiece(move.getStartPosition());
+        ArrayList valid_moves = new ArrayList<>();
+        valid_moves.addAll(validMoves(move.getStartPosition()));
+        if(piece.getTeamColor() != getTeamTurn()){
+            throw new InvalidMoveException("wrong team");
+        }
+        if(!valid_moves.contains(move)){
+            throw new InvalidMoveException("no valid moves");
+        }
         board.addPiece(move.getStartPosition(),null);
         if (move.getPromotionPiece() == null) {
             board.addPiece(move.getEndPosition(), piece);
@@ -131,12 +147,12 @@ public class ChessGame {
                 }
 
             }
+            setTeamTurn(piece.getTeamColor());
         }
         else{
             ChessPiece promoted = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
             board.addPiece(move.getEndPosition(),promoted);
         }
-        setTeamTurn(piece.getTeamColor());
     }
 
     /**
@@ -146,6 +162,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        //each helper function starts at the kings position and checks along the routes for a piece of that type and opposite color
         ChessPosition king;
         if(teamColor == TeamColor.BLACK){
              king = black_king;
@@ -394,22 +411,23 @@ public class ChessGame {
 
         if(pieceColor == ChessGame.TeamColor.BLACK) {
 
+            if (myPosition.getRow() != 8) {
 
+                if (myPosition.getColumn() != 1) {
+                    ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1));
 
-            if(myPosition.getColumn() != 1) {
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1));
-
-                if (otherPiece == null) {
-                } else if ((otherPiece.getTeamColor() == ChessGame.TeamColor.WHITE) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)) {
-                    return true;
+                    if (otherPiece == null) {
+                    } else if ((otherPiece.getTeamColor() == ChessGame.TeamColor.WHITE) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)) {
+                        return true;
+                    }
                 }
-            }
 
-            if(myPosition.getColumn() != 8) {
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1));
-                if (otherPiece == null){}
-                else if((otherPiece.getTeamColor() == ChessGame.TeamColor.WHITE) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)){
-                    return true;
+                if (myPosition.getColumn() != 8) {
+                    ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1));
+                    if (otherPiece == null) {
+                    } else if ((otherPiece.getTeamColor() == ChessGame.TeamColor.WHITE) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -417,22 +435,23 @@ public class ChessGame {
 
         if(pieceColor == ChessGame.TeamColor.WHITE) {
 
+            if(myPosition.getRow() != 1) {
 
+                if (myPosition.getColumn() != 1) {
+                    ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1));
 
-            if(myPosition.getColumn() != 1) {
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() -1, myPosition.getColumn() - 1));
-
-                if (otherPiece == null) {
-                } else if ((otherPiece.getTeamColor() == ChessGame.TeamColor.BLACK) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)) {
-                    return true;
+                    if (otherPiece == null) {
+                    } else if ((otherPiece.getTeamColor() == ChessGame.TeamColor.BLACK) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)) {
+                        return true;
+                    }
                 }
-            }
 
-            if(myPosition.getColumn() != 8) {
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1));
-                if (otherPiece == null){}
-                else if((otherPiece.getTeamColor() == ChessGame.TeamColor.BLACK) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)){
-                    return true;
+                if (myPosition.getColumn() != 8) {
+                    ChessPiece otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1));
+                    if (otherPiece == null) {
+                    } else if ((otherPiece.getTeamColor() == ChessGame.TeamColor.BLACK) && (otherPiece.getPieceType() == ChessPiece.PieceType.PAWN)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -468,7 +487,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //find potential blockers
+        return true;
     }
 
     /**
@@ -479,7 +499,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //check if anything can move
+
+        return true;
     }
 
     /**
