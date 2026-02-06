@@ -115,8 +115,14 @@ public class ChessBoard {
 
     @Override
     public String toString() {
+        StringBuilder debug= new StringBuilder();
+        for(int i = 0; i <=7;i++){
+            for(int j = 0; j <= 7; j++){
+                debug.append(squares[i][j]);
+            }
+        }
         return "ChessBoard{" +
-                "squares=" + Arrays.toString(squares) +
+                "squares=" + debug.toString() +
                 '}';
     }
 }

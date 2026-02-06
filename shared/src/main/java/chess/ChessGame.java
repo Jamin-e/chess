@@ -15,14 +15,24 @@ public class ChessGame {
 
     private TeamColor current_turn = TeamColor.WHITE;
     private ChessBoard board = new ChessBoard();
-    List moves;
-    //track king positions to easily check for check or mate
-    private ChessPosition white_king = new ChessPosition(1,5);
-    private ChessPosition black_king = new ChessPosition(8,5);
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return current_turn == chessGame.current_turn && Objects.equals(board, chessGame.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(current_turn, board);
+    }
 
     public ChessGame() {
     this.board.resetBoard();
-    moves = new ArrayList<>();
     }
 
     /**
@@ -38,36 +48,9 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        if(team == TeamColor.WHITE){
-            current_turn = TeamColor.BLACK;
-        }
-        else{
-            current_turn = TeamColor.WHITE;
-        }
+            current_turn = team;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ChessGame chessGame = (ChessGame) o;
-        return current_turn == chessGame.current_turn && Objects.equals(board, chessGame.board) && Objects.equals(moves, chessGame.moves);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(current_turn, board, moves);
-    }
-
-    @Override
-    public String toString() {
-        return "ChessGame{" +
-                "current_turn=" + current_turn +
-                ", board=" + board +
-                ", moves=" + moves +
-                '}';
-    }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -86,34 +69,36 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
+        ArrayList<ChessMove> moves;
+        moves = new ArrayList<>();
+        ArrayList<ChessMove> moves_to_check;
+        moves_to_check = new ArrayList<>();
         if(piece != null){
             //get all moves before check checks
-            moves.addAll(piece.pieceMoves(board, startPosition));
+            moves_to_check.addAll(piece.pieceMoves(board, startPosition));
             //make a copy of the board and for all moves make sure it doesn't put own king in check or can't get king out of check
-            ChessBoard original_copy = board.deepCopy();
-            for(Object move : moves){
-                makeMovetemp((ChessMove) move);
-                if(isInCheck(piece.getTeamColor())){
-                    moves.remove(move);
+            for(ChessMove move : moves_to_check){
+                ChessBoard copy = board.deepCopy();
+                makeMovetemp(move, copy);
+                if(!isInCheck(piece.getTeamColor(), copy)){
+                    moves.add(move);
                 }
-                board = original_copy;
             }
-            board = original_copy;
 
             return moves;
         }
         return null;
     }
 
-    public void makeMovetemp(ChessMove move) {
-        ChessPiece piece = board.getPiece(move.getStartPosition());
-        board.addPiece(move.getStartPosition(),null);
+    public void makeMovetemp(ChessMove move, ChessBoard copy) {
+        ChessPiece piece = copy.getPiece(move.getStartPosition());
+        copy.addPiece(move.getStartPosition(),null);
         if (move.getPromotionPiece() == null) {
-            board.addPiece(move.getEndPosition(), piece);
+            copy.addPiece(move.getEndPosition(), piece);
         }
         else{
             ChessPiece promoted = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
-            board.addPiece(move.getEndPosition(),promoted);
+            copy.addPiece(move.getEndPosition(),promoted);
         }
     }
     /**
@@ -135,26 +120,37 @@ public class ChessGame {
         if(!valid_moves.contains(move)){
             throw new InvalidMoveException("no valid moves");
         }
-        board.addPiece(move.getStartPosition(),null);
+        ChessPosition temp = move.getStartPosition();
+        board.addPiece(temp,null);
         if (move.getPromotionPiece() == null) {
             board.addPiece(move.getEndPosition(), piece);
-            if(piece.getPieceType() == ChessPiece.PieceType.KING){
-                if(piece.getTeamColor() == TeamColor.BLACK){
-                    black_king = move.getEndPosition();
-                }
-                else{
-                    white_king = move.getEndPosition();
-                }
-
-            }
-            setTeamTurn(piece.getTeamColor());
         }
         else{
             ChessPiece promoted = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
             board.addPiece(move.getEndPosition(),promoted);
         }
+        if(piece.getTeamColor() == TeamColor.WHITE) {
+            setTeamTurn(TeamColor.BLACK);
+        }
+        else{
+            setTeamTurn(TeamColor.WHITE);
+        }
     }
 
+
+    public ChessPosition findKing(TeamColor teamColor){
+        for(int i = 1; i <= 8; i++){
+            for(int j = 1; j <= 8; j++){
+                ChessPiece temp = board.getPiece(new ChessPosition(i,j));
+                if(temp == null){
+                }
+                else if(temp.equals(new ChessPiece(teamColor, ChessPiece.PieceType.KING))){
+                    return new ChessPosition(i,j);
+                }
+            }
+        }
+        return null;
+    }
     /**
      * Determines if the given team is in check
      *
@@ -162,13 +158,16 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        return isInCheck(teamColor, board);
+    }
+    public boolean isInCheck(TeamColor teamColor, ChessBoard board) {
         //each helper function starts at the kings position and checks along the routes for a piece of that type and opposite color
         ChessPosition king;
         if(teamColor == TeamColor.BLACK){
-             king = black_king;
+             king = findKing(TeamColor.BLACK);
         }
         else{
-            king = white_king;
+            king = findKing(TeamColor.WHITE);
         }
         if(BishopCheck(board,king,teamColor)){
             return true;

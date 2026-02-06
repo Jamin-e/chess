@@ -60,4 +60,8 @@
 
 2/4/2026 - another one
 
-2/6/2026 - New helper functions
+2/5/2026 - New helper functions
+
+2/5/2026 - Worked on makeMove()
+
+2/5/2026 - Most bugs fixed
