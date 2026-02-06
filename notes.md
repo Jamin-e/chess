@@ -65,3 +65,5 @@
 2/5/2026 - Worked on makeMove()
 
 2/5/2026 - Most bugs fixed
+
+2/6/2026 - Implemented stalemate and checkmate
