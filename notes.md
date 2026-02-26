@@ -69,3 +69,5 @@
 2/6/2026 - Implemented stalemate and checkmate
 
 2/25/2026 - Started very late
+
+2/25/2026 - UserData,AuthData, dataAccess
