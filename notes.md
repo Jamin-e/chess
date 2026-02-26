@@ -67,3 +67,5 @@
 2/5/2026 - Most bugs fixed
 
 2/6/2026 - Implemented stalemate and checkmate
+
+2/25/2026 - Started very late
