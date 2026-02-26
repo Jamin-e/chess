@@ -73,3 +73,5 @@
 2/25/2026 - UserData,AuthData, dataAccess
 
 2/25/2026 - users and auth in dataaccess
+
+2/26/2026 - login implemented in UserService
