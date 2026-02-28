@@ -5,34 +5,35 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import service.ListRequest;
-import service.ListResult;
+import service.CreateRequest;
+import service.CreateResult;
 import service.UserService;
 
 
-public class ListHandler {
+public class CreateHandler {
     private final UserService userService;
     private final Gson gson = new Gson();
 
-    public ListHandler(DataAccess dataAccess){
+    public CreateHandler(DataAccess dataAccess){
         this.userService = new UserService(dataAccess);
     }
 
-    public Handler list = ctx -> handleList(ctx);
+    public Handler create = ctx -> handleCreate(ctx);
 
-    private void handleList(Context ctx){
+    private void handleCreate(Context ctx){
         try{
-            var listRequest = gson.fromJson(ctx.body(),ListRequest.class);
+            var createRequest = gson.fromJson(ctx.body(),CreateRequest.class);
 
-            ListResult result = userService.list(listRequest);
+            CreateResult result = userService.create(createRequest);
 
             ctx.status(200);
             ctx.json(result);
         }
         catch(DataAccessException e){}
             String message = ctx.result();
-
-        if ("Error: unauthorized".equals(message)) {
+        if ("Error: bad request".equals(message)) {
+            ctx.status(400);
+        } else if ("Error: unauthorized".equals(message)) {
             ctx.status(401);
         } else {
             ctx.status(500);
