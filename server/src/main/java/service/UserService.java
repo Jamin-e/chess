@@ -14,7 +14,29 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public RegisterResult register(RegisterRequest registerrequest){}
+    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException{
+        if(registerRequest == null
+        || registerRequest.username() == null || registerRequest.username().isBlank()
+        || registerRequest.password() == null || registerRequest.password().isBlank()
+        || registerRequest.email() == null || registerRequest.email().isBlank()){
+            throw new DataAccessException("Error: bad request");
+        }
+        UserData user = dataAccess.getUser(registerRequest.username());
+        if(user != null){
+            throw new DataAccessException("Error: Already Taken");
+        }
+
+        UserData newUser = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email())
+
+        dataAccess.createUser(newUser);
+
+        String token = UUID.randomUUID().toString();
+        AuthData auth = new AuthData(token, newUser.username());
+        dataAccess.createAuth(auth);
+
+        return new RegisterResult(newUser.username(),token);
+
+    }
 
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException{
         if(loginRequest == null
