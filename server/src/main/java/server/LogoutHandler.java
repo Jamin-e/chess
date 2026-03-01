@@ -24,10 +24,9 @@ public class LogoutHandler {
         try{
             var logoutRequest = gson.fromJson(ctx.body(),LogoutRequest.class);
 
-            LogoutResult result = userService.logout(logoutRequest);
+            userService.logout(logoutRequest);
 
             ctx.status(200);
-            ctx.json(result);
         }
         catch(DataAccessException e){}
             String message = ctx.result();
