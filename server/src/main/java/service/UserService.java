@@ -104,4 +104,8 @@ public class UserService {
         dataAccess.updateGame(game, joinRequest.playerColor(),auth.username());
 
     }
+
+    public void clear(ClearRequest clearRequest) throws DataAccessException{
+        dataAccess.clear();
+    }
 }

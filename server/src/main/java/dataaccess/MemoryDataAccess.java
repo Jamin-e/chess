@@ -1,18 +1,21 @@
 package dataaccess;
 
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MemoryDataAccess implements DataAccess {
     private final Map<String, UserData> users = new HashMap<>();
     private final Map<String, AuthData> auths = new HashMap<>();
-
+    private final Map<String, GameData> games = new HashMap<>();
     public void clear(){
         users.clear();
         auths.clear();
+        games.clear();
     }
 
     public void createUser(UserData user) throws DataAccessException{
@@ -43,11 +46,49 @@ public class MemoryDataAccess implements DataAccess {
         return auths.get(authToken);
     }
 
-    @Override
     public void deleteAuth(String authToken) throws DataAccessException {
         if(!auths.containsKey(authToken)){
             throw new DataAccessException("auth does not exist");
         }
         auths.remove(authToken);
+    }
+
+    public String createGame(String gameID) throws DataAccessException{
+        if(games.containsKey(gameID)){
+            throw new DataAccessException("game already taken");
+        }
+
+        games.put(gameID, new GameData(gameID,null,null));
+
+                return gameID;
+    }
+
+    public GameData getGame(String gameID) throws DataAccessException{
+        if(!games.containsKey(gameID)){
+            throw new DataAccessException("game does not exist");
+        }
+        return games.get(gameID);
+    }
+
+    public void updateGame(GameData game, String color, String username) throws DataAccessException{
+        if(!games.containsKey(game.gameID())){
+            throw new DataAccessException("game does not exist");
+        }
+        if (color == "white"){
+            if(game.whiteUsername() == null) {
+                game = new GameData(game.gameID(), username, game.blackUsername());
+            }
+            else{
+                throw new DataAccessException("color already taken");
+            }
+        }
+        else{
+            if(game.blackUsername() == null) {
+                game = new GameData(game.gameID(), game.whiteUsername(), username);
+            }
+            else{
+                throw new DataAccessException("color already taken");
+            }
+        }
     }
 }
