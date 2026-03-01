@@ -73,4 +73,18 @@ public class UserService {
         dataAccess.deleteAuth(authToken);
 
     }
+
+    public CreateResult create(CreateRequest createRequest) throws DataAccessException{
+        if(createRequest == null
+                || createRequest.authToken() == null || createRequest.authToken().isBlank()
+                || createRequest.gameName() == null || createRequest.gameName().isBlank()){
+            throw new DataAccessException("Error: bad request");
+        }
+
+        AuthData auth = dataAccess.getAuth(createRequest.authToken());
+
+        String gameID = dataAccess.createGame(createRequest.gameName());
+
+        return new CreateResult(gameID);
+    }
 }
