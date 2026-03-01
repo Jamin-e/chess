@@ -3,6 +3,7 @@ package service;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.util.UUID;
@@ -40,8 +41,8 @@ public class UserService {
 
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException{
         if(loginRequest == null
-                || loginRequest.password() == null || loginRequest.password().isBlank()
-                || loginRequest.username() == null || loginRequest.username().isBlank()){
+        || loginRequest.password() == null || loginRequest.password().isBlank()
+        || loginRequest.username() == null || loginRequest.username().isBlank()){
             throw new DataAccessException("Error: bad request");
         }
         UserData user =  dataAccess.getUser(loginRequest.username());
@@ -76,8 +77,8 @@ public class UserService {
 
     public CreateResult create(CreateRequest createRequest) throws DataAccessException{
         if(createRequest == null
-                || createRequest.authToken() == null || createRequest.authToken().isBlank()
-                || createRequest.gameName() == null || createRequest.gameName().isBlank()){
+        || createRequest.authToken() == null || createRequest.authToken().isBlank()
+        || createRequest.gameName() == null || createRequest.gameName().isBlank()){
             throw new DataAccessException("Error: bad request");
         }
 
@@ -86,5 +87,21 @@ public class UserService {
         String gameID = dataAccess.createGame(createRequest.gameName());
 
         return new CreateResult(gameID);
+    }
+
+    public void join(JoinRequest joinRequest) throws DataAccessException{
+        if(joinRequest == null
+            || joinRequest.authToken() == null || joinRequest.authToken().isBlank()
+            || joinRequest.gameID() == null || joinRequest.gameID().isBlank()
+            || joinRequest.playerColor() == null || joinRequest.playerColor().isBlank()) {
+            throw new DataAccessException("Error: bad request");
+        }
+
+        AuthData auth = dataAccess.getAuth(joinRequest.authToken());
+
+        GameData game = dataAccess.getGame(joinRequest.gameID());
+
+        dataAccess.updateGame(game, joinRequest.playerColor(),auth.username());
+
     }
 }

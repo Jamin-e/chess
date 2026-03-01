@@ -24,10 +24,9 @@ public class ClearHandler {
         try{
             var clearRequest = gson.fromJson(ctx.body(),ClearRequest.class);
 
-            ClearResult result = userService.clear(clearRequest);
+            userService.clear(clearRequest);
 
             ctx.status(200);
-            ctx.json(result);
         }
         catch(DataAccessException e){}
             String message = ctx.result();

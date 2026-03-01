@@ -24,10 +24,9 @@ public class JoinHandler {
         try{
             var joinRequest = gson.fromJson(ctx.body(),JoinRequest.class);
 
-            JoinResult result = userService.join(joinRequest);
+            userService.join(joinRequest);
 
             ctx.status(200);
-            ctx.json(result);
         }
         catch(DataAccessException e){}
             String message = ctx.result();
