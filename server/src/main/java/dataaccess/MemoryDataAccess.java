@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -11,7 +12,7 @@ import java.util.UUID;
 public class MemoryDataAccess implements DataAccess {
     private final Map<String, UserData> users = new HashMap<>();
     private final Map<String, AuthData> auths = new HashMap<>();
-    private final Map<String, GameData> games = new HashMap<>();
+    private final Map<Integer, GameData> games = new HashMap<>();
     public void clear(){
         users.clear();
         auths.clear();
@@ -53,17 +54,14 @@ public class MemoryDataAccess implements DataAccess {
         auths.remove(authToken);
     }
 
-    public String createGame(String gameID) throws DataAccessException{
-        if(games.containsKey(gameID)){
-            throw new DataAccessException("game already taken");
-        }
-
-        games.put(gameID, new GameData(gameID,null,null));
+    public int createGame(String gamename) throws DataAccessException{
+        int gameID = games.size();
+        games.put(gameID, new GameData(gameID,null,null, gamename, new ChessGame()));
 
                 return gameID;
     }
 
-    public GameData getGame(String gameID) throws DataAccessException{
+    public GameData getGame(int gameID) throws DataAccessException{
         if(!games.containsKey(gameID)){
             throw new DataAccessException("game does not exist");
         }
@@ -76,7 +74,7 @@ public class MemoryDataAccess implements DataAccess {
         }
         if (color == "white"){
             if(game.whiteUsername() == null) {
-                game = new GameData(game.gameID(), username, game.blackUsername());
+                game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
             }
             else{
                 throw new DataAccessException("color already taken");
@@ -84,7 +82,7 @@ public class MemoryDataAccess implements DataAccess {
         }
         else{
             if(game.blackUsername() == null) {
-                game = new GameData(game.gameID(), game.whiteUsername(), username);
+                game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
             }
             else{
                 throw new DataAccessException("color already taken");
@@ -92,7 +90,7 @@ public class MemoryDataAccess implements DataAccess {
         }
     }
 
-    public Map<String, GameData> listGames(){
+    public Map<Integer, GameData> listGames(){
         return games;
     }
 }

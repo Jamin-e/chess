@@ -19,8 +19,8 @@ public interface DataAccess {
     void deleteAuth(String authToken) throws DataAccessException;
 
     //games
-    String createGame(String gameID) throws DataAccessException;
-    GameData getGame(String gameID) throws DataAccessException;
+    int createGame(String gameName) throws DataAccessException;
+    GameData getGame(int gameID) throws DataAccessException;
     void updateGame(GameData game, String color, String username) throws DataAccessException;
-    Map<String, GameData> listGames() throws DataAccessException;
+    Map<Integer, GameData> listGames() throws DataAccessException;
 }

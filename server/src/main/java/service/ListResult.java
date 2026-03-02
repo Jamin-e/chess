@@ -5,5 +5,5 @@ import model.GameData;
 
 import java.util.Map;
 
-public record ListResult(Map<String, GameData> games) {
+public record ListResult(Map<Integer, GameData> games) {
 }

@@ -85,7 +85,7 @@ public class UserService {
 
         AuthData auth = dataAccess.getAuth(createRequest.authToken());
 
-        String gameID = dataAccess.createGame(createRequest.gameName());
+        int gameID = dataAccess.createGame(createRequest.gameName());
 
         return new CreateResult(gameID);
     }
@@ -100,7 +100,7 @@ public class UserService {
 
         AuthData auth = dataAccess.getAuth(joinRequest.authToken());
 
-        GameData game = dataAccess.getGame(joinRequest.gameID());
+        GameData game = dataAccess.getGame(Integer.parseInt(joinRequest.gameID()));
 
         dataAccess.updateGame(game, joinRequest.playerColor(),auth.username());
 
@@ -120,7 +120,7 @@ public class UserService {
             throw new DataAccessException("Error: unauthorized");
         }
 
-        Map<String, GameData> games = dataAccess.listGames();
+        Map<Integer, GameData> games = dataAccess.listGames();
 
         return new ListResult(games);
     }
