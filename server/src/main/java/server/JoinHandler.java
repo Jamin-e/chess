@@ -5,9 +5,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import service.JoinRequest;
-import service.JoinResult;
-import service.UserService;
+import service.*;
 
 
 public class JoinHandler {
@@ -22,11 +20,19 @@ public class JoinHandler {
 
     private void handleJoin(Context ctx){
         try{
-            var joinRequest = gson.fromJson(ctx.body(),JoinRequest.class);
 
-            userService.join(joinRequest);
+            String authToken = ctx.header("authorization");
+            Body body = gson.fromJson(ctx.body(), Body.class);
+
+            JoinRequest joinRequest = new JoinRequest(authToken, body.playerColor, body.gameID);
+
+            JoinResult result = userService.join(joinRequest);
+
 
             ctx.status(200);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(result));
+
         }
         catch(DataAccessException e) {
             String message = e.getMessage();
@@ -48,5 +54,9 @@ public class JoinHandler {
     }
 
     private record ErrorResponse(String message) {}
+    private static class Body {
+        String gameID;
+        String playerColor;
+    }
 
 }

@@ -72,7 +72,7 @@ public class MemoryDataAccess implements DataAccess {
         if(!games.containsKey(game.gameID())){
             throw new DataAccessException("game does not exist");
         }
-        if (color == "white"){
+        if (color == "WHITE"){
             if(game.whiteUsername() == null) {
                 game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
             }

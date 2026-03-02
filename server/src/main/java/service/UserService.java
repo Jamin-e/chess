@@ -91,7 +91,7 @@ public class UserService {
         return new CreateResult(gameID);
     }
 
-    public void join(JoinRequest joinRequest) throws DataAccessException{
+    public JoinResult join(JoinRequest joinRequest) throws DataAccessException{
         if(joinRequest == null
             || joinRequest.authToken() == null || joinRequest.authToken().isBlank()
             || joinRequest.gameID() == null || joinRequest.gameID().isBlank()
@@ -104,6 +104,8 @@ public class UserService {
         GameData game = dataAccess.getGame(Integer.parseInt(joinRequest.gameID()));
 
         dataAccess.updateGame(game, joinRequest.playerColor(),auth.username());
+
+        return new JoinResult();
 
     }
 

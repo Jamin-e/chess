@@ -28,6 +28,7 @@ public class CreateHandler {
 
 
             ctx.status(200);
+            ctx.contentType("application/json");
             ctx.result(gson.toJson(result));
 
         } catch (DataAccessException e) {
