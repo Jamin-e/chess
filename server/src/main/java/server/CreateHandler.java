@@ -5,9 +5,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import service.CreateRequest;
-import service.CreateResult;
-import service.UserService;
+import service.*;
 
 
 public class CreateHandler {
@@ -22,12 +20,16 @@ public class CreateHandler {
 
     private void handleCreate(Context ctx) {
         try {
-            var createRequest = gson.fromJson(ctx.body(), CreateRequest.class);
+            String authToken = ctx.header("authorization");
+
+            CreateRequest createRequest = new CreateRequest(authToken, ctx.body());
 
             CreateResult result = userService.create(createRequest);
 
+
             ctx.status(200);
             ctx.result(gson.toJson(result));
+
         } catch (DataAccessException e) {
             String message = e.getMessage();
             int status;
