@@ -27,7 +27,7 @@ public class RegistrationHandler {
             RegisterResult result = userService.register(registerRequest);
 
             ctx.status(200);
-            ctx.json(result);
+            ctx.result(gson.toJson(result));
         }
         catch(DataAccessException e){}
             String message = ctx.result();
@@ -35,7 +35,7 @@ public class RegistrationHandler {
             ctx.status(403);
         }
 
-        ctx.json(new ErrorResponse(message));
+        ctx.result(gson.toJson(new RegistrationHandler.ErrorResponse(message)));
 
     }
 

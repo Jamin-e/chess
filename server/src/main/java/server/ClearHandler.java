@@ -33,7 +33,7 @@ public class ClearHandler {
             ctx.status(500);
             message = "Error: " + message;
 
-        ctx.json(new ErrorResponse(message));
+        ctx.result(gson.toJson(new ErrorResponse(message)));
 
     }
 

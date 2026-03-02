@@ -27,7 +27,7 @@ public class CreateHandler {
             CreateResult result = userService.create(createRequest);
 
             ctx.status(200);
-            ctx.json(result);
+            ctx.result(gson.toJson(result));
         }
         catch(DataAccessException e){}
             String message = ctx.result();
@@ -40,7 +40,7 @@ public class CreateHandler {
             message = "Error: " + message;
         }
 
-        ctx.json(new ErrorResponse(message));
+        ctx.result(gson.toJson(new CreateHandler.ErrorResponse(message)));
 
     }
 

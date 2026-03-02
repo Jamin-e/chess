@@ -26,7 +26,7 @@ public class LoginHandler{
             LoginResult result = userService.login(loginRequest);
 
             ctx.status(200);
-            ctx.json(result);
+            ctx.result(gson.toJson(result));
         }
         catch(DataAccessException e){}
             String message = ctx.result();
@@ -39,7 +39,7 @@ public class LoginHandler{
             message = "Error: " + message;
         }
 
-        ctx.json(new ErrorResponse(message));
+        ctx.result(gson.toJson(new LoginHandler.ErrorResponse(message)));
 
     }
 

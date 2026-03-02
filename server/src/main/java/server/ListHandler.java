@@ -27,7 +27,7 @@ public class ListHandler {
             ListResult result = userService.list(listRequest);
 
             ctx.status(200);
-            ctx.json(result);
+            ctx.result(gson.toJson(result));
         }
         catch(DataAccessException e){}
             String message = ctx.result();
@@ -39,7 +39,7 @@ public class ListHandler {
             message = "Error: " + message;
         }
 
-        ctx.json(new ErrorResponse(message));
+        ctx.result(gson.toJson(new ListHandler.ErrorResponse(message)));
 
     }
 

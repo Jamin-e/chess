@@ -37,7 +37,7 @@ public class LogoutHandler {
             message = "Error: " + message;
         }
 
-        ctx.json(new ErrorResponse(message));
+        ctx.result(gson.toJson(new LogoutHandler.ErrorResponse(message)));
 
     }
 

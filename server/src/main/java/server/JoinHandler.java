@@ -39,7 +39,7 @@ public class JoinHandler {
             message = "Error: already taken";
         }
 
-        ctx.json(new ErrorResponse(message));
+        ctx.result(gson.toJson(new JoinHandler.ErrorResponse(message)));
 
     }
 
