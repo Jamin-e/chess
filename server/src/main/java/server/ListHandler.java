@@ -5,9 +5,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import service.ListRequest;
-import service.ListResult;
-import service.UserService;
+import service.*;
 
 
 public class ListHandler {
@@ -22,11 +20,15 @@ public class ListHandler {
 
     private void handleList(Context ctx){
         try{
-            var listRequest = gson.fromJson(ctx.body(),ListRequest.class);
+            String authToken = ctx.header("authorization");
+
+            ListRequest listRequest = new ListRequest(authToken);
 
             ListResult result = userService.list(listRequest);
 
+
             ctx.status(200);
+            ctx.contentType("application/json");
             ctx.result(gson.toJson(result));
         }
         catch(DataAccessException e) {
