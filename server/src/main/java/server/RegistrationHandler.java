@@ -18,7 +18,7 @@ public class RegistrationHandler {
         this.userService = new UserService(dataAccess);
     }
 
-    public Handler login = ctx -> handleRegistration(ctx);
+    public Handler register = ctx -> handleRegistration(ctx);
 
     private void handleRegistration(Context ctx){
         try{

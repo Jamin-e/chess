@@ -14,6 +14,12 @@ public class Server {
 
         // Register your endpoints and exception handlers here.
         javalin.post("/session", new LoginHandler(dataAccess).login);
+        javalin.post("/user", new RegistrationHandler(dataAccess).register);
+        javalin.delete("/session", new LogoutHandler(dataAccess).logout);
+        javalin.get("/game", new ListHandler(dataAccess).list);
+        javalin.post("/game", new CreateHandler(dataAccess).create);
+        javalin.put("/game", new JoinHandler(dataAccess).join);
+        javalin.delete("/db", new ClearHandler(dataAccess).clear);
     }
 
     public int run(int desiredPort) {
