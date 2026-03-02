@@ -3,6 +3,9 @@ import model.AuthData;
 import model.UserData;
 import model.GameData;
 
+import javax.xml.crypto.Data;
+import java.util.Map;
+
 public interface DataAccess {
     void clear() throws DataAccessException;
 
@@ -19,4 +22,5 @@ public interface DataAccess {
     String createGame(String gameID) throws DataAccessException;
     GameData getGame(String gameID) throws DataAccessException;
     void updateGame(GameData game, String color, String username) throws DataAccessException;
+    Map<String, GameData> listGames() throws DataAccessException;
 }

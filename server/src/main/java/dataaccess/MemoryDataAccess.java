@@ -91,4 +91,8 @@ public class MemoryDataAccess implements DataAccess {
             }
         }
     }
+
+    public Map<String, GameData> listGames(){
+        return games;
+    }
 }

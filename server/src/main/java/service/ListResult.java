@@ -1,5 +1,9 @@
 package service;
 
 
-public record ListResult(String gameID, String whiteUsername, String blackUsername,String gameName) {
+import model.GameData;
+
+import java.util.Map;
+
+public record ListResult(Map<String, GameData> games) {
 }

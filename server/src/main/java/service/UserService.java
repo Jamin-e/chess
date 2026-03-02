@@ -6,6 +6,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class UserService {
@@ -107,5 +108,20 @@ public class UserService {
 
     public void clear(ClearRequest clearRequest) throws DataAccessException{
         dataAccess.clear();
+    }
+
+    public ListResult list(ListRequest listRequest) throws DataAccessException{
+        if (listRequest == null
+                || listRequest.authToken() == null || listRequest.authToken().isEmpty()){
+            throw new DataAccessException("Error: bad request");
+        }
+        String authToken = listRequest.authToken();
+        if(dataAccess.getAuth(authToken) == null){
+            throw new DataAccessException("Error: unauthorized");
+        }
+
+        Map<String, GameData> games = dataAccess.listGames();
+
+        return new ListResult(games);
     }
 }
