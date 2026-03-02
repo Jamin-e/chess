@@ -14,8 +14,8 @@ public class ClearHandler {
     private final UserService userService;
     private final Gson gson = new Gson();
 
-    public ClearHandler(DataAccess dataAccess){
-        this.userService = new UserService(dataAccess);
+    public ClearHandler(UserService userService){
+        this.userService = userService;
     }
 
     public Handler clear = ctx -> handleClear(ctx);
@@ -28,12 +28,15 @@ public class ClearHandler {
 
             ctx.status(200);
         }
-        catch(DataAccessException e){}
-            String message = ctx.result();
+        catch(DataAccessException e) {
+            String message = e.getMessage();
             ctx.status(500);
             message = "Error: " + message;
 
-        ctx.result(gson.toJson(new ErrorResponse(message)));
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(new ErrorResponse(message)));
+
+        }
 
     }
 

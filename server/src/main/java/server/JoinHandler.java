@@ -14,8 +14,8 @@ public class JoinHandler {
     private final UserService userService;
     private final Gson gson = new Gson();
 
-    public JoinHandler(DataAccess dataAccess){
-        this.userService = new UserService(dataAccess);
+    public JoinHandler(UserService userService){
+        this.userService = userService;
     }
 
     public Handler join = ctx -> handleJoin(ctx);
@@ -28,18 +28,22 @@ public class JoinHandler {
 
             ctx.status(200);
         }
-        catch(DataAccessException e){}
-            String message = ctx.result();
-        if ("Error: bad request".equals(message)) {
-            ctx.status(400);
-        } else if ("Error: unauthorized".equals(message)) {
-            ctx.status(401);
-        } else {
-            ctx.status(403);
-            message = "Error: already taken";
-        }
+        catch(DataAccessException e) {
+            String message = e.getMessage();
+            int status;
+            if ("Error: bad request".equals(message)) {
+                status = 400;
+            } else if ("Error: unauthorized".equals(message)) {
+                status = 401;
+            } else {
+                status = 403;
+                message = "Error: already taken";
+            }
 
-        ctx.result(gson.toJson(new JoinHandler.ErrorResponse(message)));
+            ctx.status(status);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(new JoinHandler.ErrorResponse(message)));
+        }
 
     }
 

@@ -13,8 +13,8 @@ public class LoginHandler{
     private final UserService userService;
     private final Gson gson = new Gson();
 
-    public LoginHandler(DataAccess dataAccess){
-        this.userService = new UserService(dataAccess);
+    public LoginHandler(UserService userService){
+        this.userService = userService;
     }
 
     public Handler login = ctx -> handleLogin(ctx);
@@ -28,19 +28,22 @@ public class LoginHandler{
             ctx.status(200);
             ctx.result(gson.toJson(result));
         }
-        catch(DataAccessException e){}
-            String message = ctx.result();
-        if ("Error: bad request".equals(message)) {
-            ctx.status(400);
-        } else if ("Error: unauthorized".equals(message)) {
-            ctx.status(401);
-        } else {
-            ctx.status(500);
-            message = "Error: " + message;
+        catch(DataAccessException e) {
+            String message = e.getMessage();
+            int status;
+            if ("Error: bad request".equals(message)) {
+                status = 400;
+            } else if ("Error: unauthorized".equals(message)) {
+                status = 401;
+            } else {
+                status = 500;
+                message = "Error: " + message;
+            }
+
+            ctx.status(status);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(new LoginHandler.ErrorResponse(message)));
         }
-
-        ctx.result(gson.toJson(new LoginHandler.ErrorResponse(message)));
-
     }
 
     private record ErrorResponse(String message) {}

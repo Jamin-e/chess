@@ -14,8 +14,8 @@ public class ListHandler {
     private final UserService userService;
     private final Gson gson = new Gson();
 
-    public ListHandler(DataAccess dataAccess){
-        this.userService = new UserService(dataAccess);
+    public ListHandler(UserService userService){
+        this.userService = userService;
     }
 
     public Handler list = ctx -> handleList(ctx);
@@ -29,17 +29,20 @@ public class ListHandler {
             ctx.status(200);
             ctx.result(gson.toJson(result));
         }
-        catch(DataAccessException e){}
-            String message = ctx.result();
+        catch(DataAccessException e) {
+            String message = e.getMessage();
+            int status;
+            if ("Error: unauthorized".equals(message)) {
+                status = 401;
+            } else {
+                status = 500;
+                message = "Error: " + message;
+            }
 
-        if ("Error: unauthorized".equals(message)) {
-            ctx.status(401);
-        } else {
-            ctx.status(500);
-            message = "Error: " + message;
+            ctx.status(status);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(new ListHandler.ErrorResponse(message)));
         }
-
-        ctx.result(gson.toJson(new ListHandler.ErrorResponse(message)));
 
     }
 

@@ -25,7 +25,7 @@ public class UserService {
         }
         UserData user = dataAccess.getUser(registerRequest.username());
         if(user != null){
-            throw new DataAccessException("Error: Already Taken");
+            throw new DataAccessException("Error: username already taken");
         }
 
         UserData newUser = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
@@ -62,7 +62,7 @@ public class UserService {
         return new LoginResult(user.username(), token);
     }
 
-    public void logout(LogoutRequest logoutRequest) throws DataAccessException{
+    public LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException{
         if (logoutRequest == null
         || logoutRequest.authToken() == null || logoutRequest.authToken().isEmpty()){
             throw new DataAccessException("Error: bad request");
@@ -73,6 +73,7 @@ public class UserService {
         }
 
         dataAccess.deleteAuth(authToken);
+        return new LogoutResult();
 
     }
 

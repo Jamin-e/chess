@@ -28,7 +28,7 @@ public class MemoryDataAccess implements DataAccess {
 
     public UserData getUser(String username) throws DataAccessException{
         if(!users.containsKey(username)){
-            throw new DataAccessException("user does not exist");
+            return null;
         }
         return users.get(username);
     }
