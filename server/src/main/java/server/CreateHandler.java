@@ -21,8 +21,8 @@ public class CreateHandler {
     private void handleCreate(Context ctx) {
         try {
             String authToken = ctx.header("authorization");
-
-            CreateRequest createRequest = new CreateRequest(authToken, ctx.body());
+            CreateHandler.Body body = gson.fromJson(ctx.body(), CreateHandler.Body.class);
+            CreateRequest createRequest = new CreateRequest(authToken, body.gameName);
 
             CreateResult result = userService.create(createRequest);
 
@@ -52,4 +52,7 @@ public class CreateHandler {
 
     private record ErrorResponse(String message) {}
 
+    private static class Body {
+        String gameName;
+    }
 }
