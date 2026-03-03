@@ -136,7 +136,7 @@ public class UserService {
             throw new DataAccessException("Error: unauthorized");
         }
 
-        String games = dataAccess.listGames();
+        var games = dataAccess.listGames();
 
         return new ListResult(games);
     }

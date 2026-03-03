@@ -4,13 +4,9 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import com.google.gson.Gson;
 import service.JoinResult;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class MemoryDataAccess implements DataAccess {
     private final Map<String, UserData> users = new HashMap<>();
@@ -97,8 +93,7 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
-    public String listGames(){
-        Gson gson = new Gson();
-        return gson.toJson(games);
+    public Collection<GameData> listGames(){
+        return games.values();
     }
 }
