@@ -48,7 +48,7 @@ public class UserService {
         }
         UserData user =  dataAccess.getUser(loginRequest.username());
         if(user == null){
-            throw new DataAccessException("Error: bad request");
+            throw new DataAccessException("Error: unauthorized");
         }
 
         if(!user.password().equals(loginRequest.password())){
