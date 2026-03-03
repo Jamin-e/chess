@@ -42,7 +42,7 @@ public class MemoryDataAccess implements DataAccess {
 
     public AuthData getAuth(String authToken) throws DataAccessException{
         if(!auths.containsKey(authToken)){
-            throw new DataAccessException("auth does not exist");
+            return null;
         }
         return auths.get(authToken);
     }

@@ -85,6 +85,9 @@ public class UserService {
         }
 
         AuthData auth = dataAccess.getAuth(createRequest.authToken());
+        if(auth == null){
+            throw new DataAccessException("Error: unauthorized");
+        }
 
         int gameID = dataAccess.createGame(createRequest.gameName());
 
@@ -100,6 +103,13 @@ public class UserService {
         }
 
         AuthData auth = dataAccess.getAuth(joinRequest.authToken());
+        if(auth == null){
+            throw new DataAccessException("Error: unauthorized");
+        }
+
+        if((!joinRequest.playerColor().equals("WHITE")) && (!joinRequest.playerColor().equals("BLACK"))){
+           throw new DataAccessException("Error: bad request");
+        }
 
         GameData game = dataAccess.getGame(Integer.parseInt(joinRequest.gameID()));
 
