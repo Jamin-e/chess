@@ -74,7 +74,8 @@ public class MemoryDataAccess implements DataAccess {
 
         if (Objects.equals(color, "WHITE")){
             if(game.whiteUsername() == null) {
-                game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+                GameData updated = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+                games.put(game.gameID(),updated);
                 return new JoinResult();
             }
             else{
@@ -83,7 +84,8 @@ public class MemoryDataAccess implements DataAccess {
         }
         else if(Objects.equals(color, "BLACK")){
             if(game.blackUsername() == null) {
-                game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+                GameData updated = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+                games.put(game.gameID(),updated);
                 return new JoinResult();
             }
             else{
