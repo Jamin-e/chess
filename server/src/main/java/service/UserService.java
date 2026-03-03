@@ -113,9 +113,12 @@ public class UserService {
 
         GameData game = dataAccess.getGame(Integer.parseInt(joinRequest.gameID()));
 
-        dataAccess.updateGame(game, joinRequest.playerColor(),auth.username());
+        JoinResult joinResult = dataAccess.updateGame(game, joinRequest.playerColor(),auth.username());
+        if(joinResult == null){
+            throw new DataAccessException("Error: already taken");
+        }
 
-        return new JoinResult();
+        return joinResult;
 
     }
 
@@ -133,7 +136,7 @@ public class UserService {
             throw new DataAccessException("Error: unauthorized");
         }
 
-        Map<Integer, GameData> games = dataAccess.listGames();
+        String games = dataAccess.listGames();
 
         return new ListResult(games);
     }

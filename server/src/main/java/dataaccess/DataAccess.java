@@ -2,6 +2,7 @@ package dataaccess;
 import model.AuthData;
 import model.UserData;
 import model.GameData;
+import service.JoinResult;
 
 import javax.xml.crypto.Data;
 import java.util.Map;
@@ -21,6 +22,6 @@ public interface DataAccess {
     //games
     int createGame(String gameName) throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;
-    void updateGame(GameData game, String color, String username) throws DataAccessException;
-    Map<Integer, GameData> listGames() throws DataAccessException;
+    JoinResult updateGame(GameData game, String color, String username) throws DataAccessException;
+    String listGames() throws DataAccessException;
 }

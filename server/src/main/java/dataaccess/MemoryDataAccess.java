@@ -4,9 +4,12 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import com.google.gson.Gson;
+import service.JoinResult;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MemoryDataAccess implements DataAccess {
@@ -55,7 +58,7 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     public int createGame(String gamename) throws DataAccessException{
-        int gameID = games.size();
+        int gameID = games.size() + 1;
         games.put(gameID, new GameData(gameID,null,null, gamename, new ChessGame()));
 
                 return gameID;
@@ -68,29 +71,34 @@ public class MemoryDataAccess implements DataAccess {
         return games.get(gameID);
     }
 
-    public void updateGame(GameData game, String color, String username) throws DataAccessException{
+    public JoinResult updateGame(GameData game, String color, String username) throws DataAccessException{
         if(!games.containsKey(game.gameID())){
             throw new DataAccessException("game does not exist");
         }
-        if (color == "WHITE"){
+
+        if (Objects.equals(color, "WHITE")){
             if(game.whiteUsername() == null) {
                 game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+                return new JoinResult();
             }
             else{
-                throw new DataAccessException("color already taken");
+                return null;
             }
         }
-        else{
+        else if(Objects.equals(color, "BLACK")){
             if(game.blackUsername() == null) {
                 game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+                return new JoinResult();
             }
             else{
-                throw new DataAccessException("color already taken");
+                return null;
             }
         }
+        return null;
     }
 
-    public Map<Integer, GameData> listGames(){
-        return games;
+    public String listGames(){
+        Gson gson = new Gson();
+        return gson.toJson(games);
     }
 }
