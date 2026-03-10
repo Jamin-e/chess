@@ -1,6 +1,8 @@
 package server;
 import dataaccess.DataAccess;
+import dataaccess.DatabaseManager;
 import service.UserService;
+import dataaccess.DataAccessException;
 
 import dataaccess.MemoryDataAccess;
 import io.javalin.*;
@@ -11,8 +13,9 @@ public class Server {
     private final DataAccess dataAccess = new MemoryDataAccess();
     private final UserService userService = new UserService(dataAccess);
 
-    public Server() {
+    public Server(){
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
+
 
         // Register your endpoints and exception handlers here.
         javalin.post("/session", new LoginHandler(userService).login);
@@ -24,7 +27,9 @@ public class Server {
         javalin.delete("/db", new ClearHandler(userService).clear);
     }
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort){
+        DatabaseManager.createDatabase();
+        DatabaseManager.createTables();
         javalin.start(desiredPort);
         return javalin.port();
     }

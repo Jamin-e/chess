@@ -33,13 +33,10 @@ public class DatabaseManager {
     * creates the tables of a database if it does not already exist
     */
     static public void createTables() throws DataAccessException {
-        var userstatement = CREATE_USER_TABLE;
-        var authstatement = CREATE_AUTH_TOKEN_TABLE;
-        var gamestatement = CREATE_GAME_TABLE;
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
-         var preparedStatementUser = conn.prepareStatement(userstatement);
-         var preparedStatementAuth = conn.prepareStatement(authstatement);
-         var preparedStatementGame = conn.prepareStatement(gamestatement)){
+         var preparedStatementUser = conn.prepareStatement(CREATE_USER_TABLE);
+         var preparedStatementAuth = conn.prepareStatement(CREATE_AUTH_TOKEN_TABLE);
+         var preparedStatementGame = conn.prepareStatement(CREATE_GAME_TABLE)){
             preparedStatementUser.executeUpdate();
             preparedStatementAuth.executeUpdate();
             preparedStatementGame.executeUpdate();
