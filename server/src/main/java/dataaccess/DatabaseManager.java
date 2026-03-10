@@ -74,4 +74,38 @@ public class DatabaseManager {
         var port = Integer.parseInt(props.getProperty("db.port"));
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
+
+
+    private static final String CREATE_USER_TABLE = """
+        CREATE TABLE IF NOT EXISTS user (
+        id INT NOT NULL AUTO_INCREMENT,
+        username VARCHAR(255) NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY user_username_uindex (username)
+        );
+        """;
+
+    private static final String CREATE_AUTH_TOKEN_TABLE= """
+        CREATE TABLE IF NOT EXISTS auth (
+        token VARCHAR(255),
+        username VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(username) REFERENCES user(username) ON DELETE CASCADE
+        )
+        """;
+
+    private static final String CREATE_GAME_TABLE = """
+            CREATE TABLE IF NOT EXISTS game (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            game_name VARCHAR(255) NOT NULL,
+            white_username VARCHAR(255),
+            black_username VARCHAR(255),
+            game_state TEXT NOT NULL,
+            FOREIGN KEY (white_username) REFERENCES user(username),
+            FOREIGN KEY (black_username) REFERENCES user(username)
+            """;
+
 }
+
+
