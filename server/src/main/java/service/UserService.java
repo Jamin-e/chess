@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,12 +24,14 @@ public class UserService {
         || registerRequest.email() == null || registerRequest.email().isBlank()){
             throw new DataAccessException("Error: bad request");
         }
+
         UserData user = dataAccess.getUser(registerRequest.username());
         if(user != null){
             throw new DataAccessException("Error: username already taken");
         }
 
-        UserData newUser = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
+        String hashedPassword = BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt());
+        UserData newUser = new UserData(registerRequest.username(), hashedPassword, registerRequest.email());
 
         dataAccess.createUser(newUser);
 
@@ -46,12 +49,14 @@ public class UserService {
         || loginRequest.username() == null || loginRequest.username().isBlank()){
             throw new DataAccessException("Error: bad request");
         }
-        UserData user =  dataAccess.getUser(loginRequest.username());
+        String hashedPassword = BCrypt.hashpw(loginRequest.username(), BCrypt.gensalt());
+        UserData user =  dataAccess.getUser(hashedPassword);
         if(user == null){
             throw new DataAccessException("Error: unauthorized");
         }
 
-        if(!user.password().equals(loginRequest.password())){
+
+        if(!user.password().equals(hashedPassword)){
             throw new DataAccessException("Error: unauthorized");
         }
 
