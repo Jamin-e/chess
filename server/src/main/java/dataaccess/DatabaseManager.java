@@ -30,6 +30,26 @@ public class DatabaseManager {
     }
 
     /**
+    * creates the tables of a database if it does not already exist
+    */
+    static public void createTables() throws DataAccessException {
+        var userstatement = CREATE_USER_TABLE;
+        var authstatement = CREATE_AUTH_TOKEN_TABLE;
+        var gamestatement = CREATE_GAME_TABLE;
+        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
+         var preparedStatementUser = conn.prepareStatement(userstatement);
+         var preparedStatementAuth = conn.prepareStatement(authstatement);
+         var preparedStatementGame = conn.prepareStatement(gamestatement)){
+            preparedStatementUser.executeUpdate();
+            preparedStatementAuth.executeUpdate();
+            preparedStatementGame.executeUpdate();
+        }
+        catch(SQLException ex){
+            throw new DataAccessException("failed to create tables", ex);
+        }
+    }
+
+    /**
      * Create a connection to the database and sets the catalog based upon the
      * properties specified in db.properties. Connections to the database should
      * be short-lived, and you must close the connection when you are done with it.
