@@ -9,6 +9,7 @@ import service.JoinResult;
 
 import java.sql.DriverManager;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Properties;
@@ -121,7 +122,7 @@ public class SQLDataAccess implements DataAccess{
 
     public GameData getGame(int gameID) throws DataAccessException{
         var sql = """
-        SELECT id, gamename, white_username, black_username, game_state FROM game WHERE id = ?""";
+        SELECT id, game_name, white_username, black_username, game_state FROM game WHERE id = ?""";
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql)){
             ps.setInt(1, gameID);
@@ -170,8 +171,25 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public Collection<GameData> listGames() throws DataAccessException{
-        try(var conn = DatabaseManager.getConnection()){
-            return null;
+        var sql = """
+        SELECT id, game_name, white_username, black_username, game_state FROM game;""";
+        var result = new ArrayList<GameData>();
+        try(var conn = DatabaseManager.getConnection();
+        var ps = conn.prepareStatement(sql);
+        var query = ps.executeQuery()){
+            while(query.next()){
+                int gameId = query.getInt("id");
+                String name = query.getString("game_name");
+                String white = query.getString("white_username");
+                String black = query.getString("black_username");
+                String json = query.getString("game_state");
+
+                ChessGame game = gson.fromJson(json, ChessGame.class);
+
+                result.add(new GameData(gameId,white,black,name,game));
+            }
+            return result;
+
         }
         catch(SQLException e){
             throw new DataAccessException(e.getMessage());
