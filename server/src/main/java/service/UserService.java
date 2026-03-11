@@ -1,11 +1,17 @@
 package service;
 
+import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
+import server.ClearHandler;
+
 
 import java.util.Map;
 import java.util.UUID;
@@ -13,9 +19,30 @@ import java.util.UUID;
 public class UserService {
     private final DataAccess dataAccess;
 
+
     public UserService(DataAccess dataAccess){
         this.dataAccess = dataAccess;
     }
+
+    public Handler startup = ctx -> startup(ctx);
+
+    public static void startup(Context ctx) throws DataAccessException{
+        final Gson gson = new Gson();
+        try {
+            DatabaseManager.createDatabase();
+            DatabaseManager.createTables();
+        } catch(DataAccessException e){
+            String message = e.getMessage();
+            ctx.status(500);
+            message = "Error: " + message;
+
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(new UserService.ErrorResponse(message)));
+
+        }
+    }
+
+    private record ErrorResponse(String message) {}
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException{
         if(registerRequest == null
