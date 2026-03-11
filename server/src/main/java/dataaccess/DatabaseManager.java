@@ -98,6 +98,7 @@ public class DatabaseManager {
         id INT NOT NULL AUTO_INCREMENT,
         username VARCHAR(255) NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
         PRIMARY KEY (id),
         UNIQUE KEY user_username_uindex (username)
         );

@@ -13,8 +13,10 @@ import java.util.Properties;
 public class SQLDataAccess implements DataAccess{
 
     public void clear() throws DataAccessException{
-        try(var conn = DatabaseManager.getConnection()){
-
+        var sql = "DROP DATABASE IF EXISTS chess";
+        try(var conn = DatabaseManager.getConnection();
+            var ps = conn.prepareStatement(sql)){
+            ps.executeUpdate();
         }
         catch(SQLException e){
             throw new DataAccessException(e.getMessage());
@@ -68,7 +70,15 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
-
+        var sql = "DELETE FROM auth WHERE token = (token) VALUES (?)";
+        try(var conn = DatabaseManager.getConnection();
+        var ps = conn.prepareStatement(sql)){
+            ps.setString(1, authToken);
+            ps.executeUpdate();
+        }
+        catch(SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public int createGame(String gamename) throws DataAccessException{
