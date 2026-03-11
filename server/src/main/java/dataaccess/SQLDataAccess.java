@@ -22,8 +22,13 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public void createUser(UserData user) throws DataAccessException{
-    try(var conn = DatabaseManager.getConnection()){
-
+        var sql = "INSERT INTO user (username, password_hash, email) VALUES (?, ?, ?)";
+        try(var conn = DatabaseManager.getConnection();
+                var ps = conn.prepareStatement(sql)){
+            ps.setString(1, user.username());
+            ps.setString(2, user.password());
+            ps.setString(3, user.email());
+            ps.executeUpdate();
     }
     catch(SQLException e){
         throw new DataAccessException(e.getMessage());
@@ -40,7 +45,12 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public void createAuth(AuthData auth) throws DataAccessException {
-        try(var conn = DatabaseManager.getConnection()){
+        var sql = "INSERT INTO auth (token, username) VALUES (?, ?)";
+        try(var conn = DatabaseManager.getConnection();
+        var ps = conn.prepareStatement(sql)){
+            ps.setString(1,auth.authToken());
+            ps.setString(2,auth.username());
+            ps.executeUpdate();
 
         }
         catch(SQLException e){
