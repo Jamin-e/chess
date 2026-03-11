@@ -43,7 +43,7 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public UserData getUser(String username) throws DataAccessException{
-        var sql = "SELECT username, password_hash, email FROM user WHERE username = (username) VALUES (?)";
+        var sql = "SELECT username, password_hash, email FROM user WHERE username = ?";
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql)){
             ps.setString(1,username);
@@ -71,7 +71,7 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException{
-        var sql ="SELECT token, username FROM auth WHERE token = (token) VALUES (?)";
+        var sql ="SELECT token, username FROM auth WHERE token = ?";
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql)){
             ps.setString(1, authToken);
@@ -85,7 +85,7 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
-        var sql = "DELETE FROM auth WHERE token = (token) VALUES (?)";
+        var sql = "DELETE FROM auth WHERE token = ?";
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql)){
             ps.setString(1, authToken);
