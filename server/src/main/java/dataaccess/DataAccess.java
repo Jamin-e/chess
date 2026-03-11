@@ -23,6 +23,6 @@ public interface DataAccess {
     //games
     int createGame(String gameName) throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;
-    JoinResult updateGame(GameData game, String color, String username) throws DataAccessException;
+    JoinResult joinGame(GameData game, String color, String username) throws DataAccessException;
     Collection<GameData> listGames() throws DataAccessException;
 }

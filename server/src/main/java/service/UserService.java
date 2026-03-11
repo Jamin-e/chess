@@ -118,7 +118,7 @@ public class UserService {
 
         GameData game = dataAccess.getGame(Integer.parseInt(joinRequest.gameID()));
 
-        JoinResult joinResult = dataAccess.updateGame(game, joinRequest.playerColor(),auth.username());
+        JoinResult joinResult = dataAccess.joinGame(game, joinRequest.playerColor(),auth.username());
         if(joinResult == null){
             throw new DataAccessException("Error: already taken");
         }

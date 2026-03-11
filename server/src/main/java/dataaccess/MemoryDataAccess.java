@@ -67,7 +67,7 @@ public class MemoryDataAccess implements DataAccess {
         return games.get(gameID);
     }
 
-    public JoinResult updateGame(GameData game, String color, String username) throws DataAccessException{
+    public JoinResult joinGame(GameData game, String color, String username) throws DataAccessException{
         if(!games.containsKey(game.gameID())){
             throw new DataAccessException("game does not exist");
         }
