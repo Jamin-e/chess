@@ -38,8 +38,13 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public UserData getUser(String username) throws DataAccessException{
-        try(var conn = DatabaseManager.getConnection()){
-            return null;
+        var sql = "SELECT username, password_hash, email FROM user WHERE username = (username) VALUES (?)";
+        try(var conn = DatabaseManager.getConnection();
+        var ps = conn.prepareStatement(sql)){
+            ps.setString(1,username);
+            ResultSet userdata = ps.executeQuery();
+            UserData userData = new UserData(userdata.getNString("username"), userdata.getNString("password_hash"), userdata.getNString("email"));
+            return userData;
         }
         catch(SQLException e){
             throw new DataAccessException(e.getMessage());
@@ -61,8 +66,13 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException{
-        try(var conn = DatabaseManager.getConnection()){
-            return null;
+        var sql ="SELECT token, username FROM auth WHERE token = (token) VALUES (?)";
+        try(var conn = DatabaseManager.getConnection();
+        var ps = conn.prepareStatement(sql)){
+            ps.setString(1, authToken);
+            ResultSet authSet = ps.executeQuery();
+            AuthData userData = new AuthData(authSet.getNString("token"), authSet.getNString("username"));
+            return userData;
         }
         catch(SQLException e){
             throw new DataAccessException(e.getMessage());
