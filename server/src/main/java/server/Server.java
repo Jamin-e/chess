@@ -8,8 +8,8 @@ public class Server {
 
     private final Javalin javalin;
     //private final DataAccess dataAccess = new MemoryDataAccess();
-    private final DataAccess SQLDataAccess = new SQLDataAccess();
-    private final UserService userService = new UserService(SQLDataAccess);
+    private final DataAccess sqlDataAccess = new SQLDataAccess();
+    private final UserService userService = new UserService(sqlDataAccess);
 
     public Server(){
         javalin = Javalin.create(config -> config.staticFiles.add("web"));

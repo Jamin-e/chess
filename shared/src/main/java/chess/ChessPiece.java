@@ -23,8 +23,8 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessPiece)) return false;
+        if (this == o) {return true;}
+        if (!(o instanceof ChessPiece)) {return false;}
         ChessPiece that = (ChessPiece) o;
         return pieceColor == that.pieceColor && type == that.type;
     }
@@ -75,7 +75,7 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public List BishopMoves(ChessBoard board, ChessPosition myPosition) {
+    public List bishopMoves(ChessBoard board, ChessPosition myPosition) {
         List moves = new ArrayList<>();
 
         int i = myPosition.getRow()+1;
@@ -154,7 +154,7 @@ public class ChessPiece {
         return moves;
     }
 
-    public List RookMoves(ChessBoard board, ChessPosition myPosition){
+    public List rookMoves(ChessBoard board, ChessPosition myPosition){
         List moves = new ArrayList<>();
 
         int i = myPosition.getRow()+1;
@@ -229,7 +229,7 @@ public class ChessPiece {
         return moves;
     }
 
-    public List KingMoves(ChessBoard board, ChessPosition myPosition) {
+    public List kingMoves(ChessBoard board, ChessPosition myPosition) {
         List moves = new ArrayList<>();
 
         int positioni = myPosition.getRow();
@@ -255,7 +255,7 @@ public class ChessPiece {
         return moves;
     }
 
-    public List KnightMoves(ChessBoard board, ChessPosition myPosition){
+    public List knightMoves(ChessBoard board, ChessPosition myPosition){
         List moves = new ArrayList<>();
 
         int i = myPosition.getRow()+2;
@@ -353,12 +353,9 @@ public class ChessPiece {
         return moves;
     }
 
-    public List PawnMoves(ChessBoard board, ChessPosition myPosition){
+    public List pawnMoves(ChessBoard board, ChessPosition myPosition){
         List moves = new ArrayList<>();
-
-
         if(pieceColor == ChessGame.TeamColor.BLACK) {
-
             if (myPosition.getRow() == 7) {
                 ChessPiece otherPiece = board.getPiece(new ChessPosition(5, myPosition.getColumn()));
                 ChessPiece otherPiece2 = board.getPiece(new ChessPosition(6, myPosition.getColumn()));
@@ -377,10 +374,8 @@ public class ChessPiece {
                     moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()), null));
                 }
             }
-
             if(myPosition.getColumn() != 1) {
                 otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1));
-
                 if (otherPiece == null) {
                 } else if (otherPiece.pieceColor == ChessGame.TeamColor.WHITE) {
                     if (myPosition.getRow() - 1 == 1) {
@@ -393,7 +388,6 @@ public class ChessPiece {
                     }
                 }
             }
-
             if(myPosition.getColumn() != 8) {
                 otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1));
                 if (otherPiece == null) {
@@ -406,14 +400,10 @@ public class ChessPiece {
                     } else {
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1), null));
                     }
-
                 }
             }
         }
-
-
         if(pieceColor == ChessGame.TeamColor.WHITE){
-
             if(myPosition.getRow() == 2){
                 ChessPiece otherPiece = board.getPiece(new ChessPosition(4, myPosition.getColumn()));
                 ChessPiece otherPiece2 = board.getPiece(new ChessPosition(6, myPosition.getColumn()));
@@ -428,17 +418,14 @@ public class ChessPiece {
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), PieceType.ROOK));
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), PieceType.BISHOP));
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), PieceType.QUEEN));
-                    }
-                    else{
+                    } else{
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), null));
                     }
                 }
-
                 if(myPosition.getColumn() != 1) {
                     otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1));
                     if (otherPiece == null) {
                     } else if (otherPiece.pieceColor == ChessGame.TeamColor.BLACK) {
-
                         if (myPosition.getRow() + 1 == 8) {
                             moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1), PieceType.KNIGHT));
                             moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1), PieceType.ROOK));
@@ -449,7 +436,6 @@ public class ChessPiece {
                         }
                     }
                 }
-
                 if(myPosition.getColumn() != 8) {
                     otherPiece = board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1));
                     if (otherPiece == null) {
@@ -464,33 +450,31 @@ public class ChessPiece {
                         }
                     }
                 }
-
         }
-
         return moves;
     }
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.BISHOP){
-            return BishopMoves(board, myPosition);
+            return bishopMoves(board, myPosition);
         }
         if (piece.getPieceType() == PieceType.ROOK){
-            return RookMoves(board, myPosition);
+            return rookMoves(board, myPosition);
         }
         if (piece.getPieceType() == PieceType.QUEEN){
-            List temp =  RookMoves(board, myPosition);
-            temp.addAll(BishopMoves( board, myPosition));
+            List temp =  rookMoves(board, myPosition);
+            temp.addAll(bishopMoves( board, myPosition));
             return temp;
         }
         if (piece.getPieceType() == PieceType.KING){
-            return KingMoves(board, myPosition);
+            return kingMoves(board, myPosition);
         }
         if (piece.getPieceType() == PieceType.KNIGHT){
-            return KnightMoves(board, myPosition);
+            return knightMoves(board, myPosition);
         }
         if (piece.getPieceType() == PieceType.PAWN){
-            return PawnMoves(board, myPosition);
+            return pawnMoves(board, myPosition);
         }
         return List.of();
     }
