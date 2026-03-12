@@ -24,23 +24,8 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public Handler startup = ctx -> startup(ctx);
 
-    public static void startup(Context ctx) throws DataAccessException{
-        final Gson gson = new Gson();
-        try {
-            DatabaseManager.createDatabase();
-            DatabaseManager.createTables();
-        } catch(DataAccessException e){
-            String message = e.getMessage();
-            ctx.status(500);
-            message = "Error: " + message;
 
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(new UserService.ErrorResponse(message)));
-
-        }
-    }
 
     private record ErrorResponse(String message) {}
 

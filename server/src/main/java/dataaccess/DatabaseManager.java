@@ -33,7 +33,7 @@ public class DatabaseManager {
     * creates the tables of a database if it does not already exist
     */
     static public void createTables() throws DataAccessException {
-        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
+        try (var conn = DatabaseManager.getConnection();
          var preparedStatementUser = conn.prepareStatement(CREATE_USER_TABLE);
          var preparedStatementAuth = conn.prepareStatement(CREATE_AUTH_TOKEN_TABLE);
          var preparedStatementGame = conn.prepareStatement(CREATE_GAME_TABLE)){
@@ -58,7 +58,7 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws DataAccessException {
         try {
             //do not wrap the following line with a try-with-resources
             var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
@@ -120,8 +120,9 @@ public class DatabaseManager {
             white_username VARCHAR(255),
             black_username VARCHAR(255),
             game_state TEXT NOT NULL,
-            FOREIGN KEY (white_username) REFERENCES user(username),
-            FOREIGN KEY (black_username) REFERENCES user(username)
+            FOREIGN KEY (white_username) REFERENCES user(username) ON DELETE SET NULL,
+            FOREIGN KEY (black_username) REFERENCES user(username) ON DELETE SET NULL
+            )
             """;
 
 }

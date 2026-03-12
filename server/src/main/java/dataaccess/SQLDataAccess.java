@@ -18,10 +18,14 @@ public class SQLDataAccess implements DataAccess{
     private final Gson gson = new Gson();
 
     public void clear() throws DataAccessException{
-        var sql = "DROP DATABASE IF EXISTS chess";
+        var sql = "TRUNCATE TABLE auth; TRUNCATE TABLE game; TRUNCATE TABLE user;";
         try(var conn = DatabaseManager.getConnection();
             var ps = conn.prepareStatement(sql)){
-            ps.executeUpdate();
+            ps.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
+            ps.executeUpdate("TRUNCATE TABLE auth");
+            ps.executeUpdate("TRUNCATE TABLE game");
+            ps.executeUpdate("TRUNCATE TABLE user");
+            ps.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
         }
         catch(SQLException e){
             throw new DataAccessException(e.getMessage());
@@ -42,17 +46,23 @@ public class SQLDataAccess implements DataAccess{
     }
     }
 
-    public UserData getUser(String username) throws DataAccessException{
+    public UserData getUser(String username) throws DataAccessException {
         var sql = "SELECT username, password_hash, email FROM user WHERE username = ?";
-        try(var conn = DatabaseManager.getConnection();
-        var ps = conn.prepareStatement(sql)){
-            ps.setString(1,username);
-            ResultSet userdata = ps.executeQuery();
-            UserData userData = new UserData(userdata.getNString("username"), userdata.getNString("password_hash"), userdata.getNString("email"));
-            return userData;
-        }
-        catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (var rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return new UserData(
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("email")
+                );
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage(), e);
         }
     }
 
@@ -70,17 +80,22 @@ public class SQLDataAccess implements DataAccess{
         }
     }
 
-    public AuthData getAuth(String authToken) throws DataAccessException{
-        var sql ="SELECT token, username FROM auth WHERE token = ?";
-        try(var conn = DatabaseManager.getConnection();
-        var ps = conn.prepareStatement(sql)){
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        var sql = "SELECT token, username FROM auth WHERE token = ?";
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement(sql)) {
             ps.setString(1, authToken);
-            ResultSet authSet = ps.executeQuery();
-            AuthData userData = new AuthData(authSet.getNString("token"), authSet.getNString("username"));
-            return userData;
-        }
-        catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            try (var rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return new AuthData(
+                        rs.getString("token"),
+                        rs.getString("username")
+                );
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage(), e);
         }
     }
 
@@ -103,10 +118,14 @@ public class SQLDataAccess implements DataAccess{
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1,gamename);
-            ps.setString(2,null);
-            ps.setString(3,null);
+            ps.setNull(2, Types.VARCHAR);
+            ps.setNull(3, Types.VARCHAR);
             ps.setString(4,json);
 
+            int affected = ps.executeUpdate();
+            if (affected == 0) {
+                throw new DataAccessException("Creating game failed, no rows affected");
+            }
             try (var key = ps.getGeneratedKeys()) {
                 if (key.next()) {
                     return key.getInt(1);
@@ -148,21 +167,26 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public JoinResult joinGame(GameData game, String color, String username) throws DataAccessException{
-        var sql = """
-""";
+        String sql;
         if (Objects.equals(color, "WHITE")) {
-            sql = """
-                    UPDATE game SET white_username = ? WHERE id = ?""";
-        }
-        else{
-            sql = """
-                    UPDATE game SET black_username = ? WHERE game_name = ?""";
+            if (game.whiteUsername() != null) {
+                return null; // already taken
+            }
+            sql = "UPDATE game SET white_username = ? WHERE id = ?";
+        } else {
+            if (game.blackUsername() != null) {
+                return null; // already taken
+            }
+            sql = "UPDATE game SET black_username = ? WHERE id = ?";
         }
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql)){
             ps.setString(1,username);
-            ps.setString(2, game.gameName());
-            ps.executeUpdate();
+            ps.setInt(2, game.gameID());
+            int updated = ps.executeUpdate();
+            if (updated == 0) {
+                throw new DataAccessException("Game not found when joining");
+            }
             return new JoinResult();
         }
         catch(SQLException e){

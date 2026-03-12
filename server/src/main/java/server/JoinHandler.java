@@ -41,9 +41,13 @@ public class JoinHandler {
                 status = 400;
             } else if ("Error: unauthorized".equals(message)) {
                 status = 401;
-            } else {
+            } else if ("Error: already taken".equals(message)){
                 status = 403;
                 message = "Error: already taken";
+            }
+            else{
+                status = 500;
+                message = "Error" + e.getMessage();
             }
 
             ctx.status(status);

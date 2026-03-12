@@ -25,6 +25,7 @@ public class Server {
     }
 
     public int run(int desiredPort){
+        startup();
         javalin.start(desiredPort);
         return javalin.port();
     }
@@ -32,4 +33,14 @@ public class Server {
     public void stop() {
         javalin.stop();
     }
+
+    public void startup(){
+        try {
+            DatabaseManager.createDatabase();
+            DatabaseManager.createTables();
+        } catch(DataAccessException e){
+
+        }
+    }
 }
+
