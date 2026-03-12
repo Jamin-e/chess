@@ -100,7 +100,7 @@ public class ChessGame {
             throw new InvalidMoveException("empty");
         }
         ChessPiece piece = board.getPiece(move.getStartPosition());
-        ArrayList validMoves = new ArrayList<>();
+        ArrayList<Object> validMoves = new ArrayList<>();
         validMoves.addAll(validMoves(move.getStartPosition()));
         if(piece.getTeamColor() != getTeamTurn()){
             throw new InvalidMoveException("wrong team");
@@ -164,10 +164,7 @@ public class ChessGame {
         if(pawnCheck(board, king, teamColor)){
             return true;
         }
-        if(kingCheck(board, king, teamColor)){
-            return true;
-        }
-        return false;
+        return kingCheck(board, king, teamColor);
     }
     public boolean bishopCheck(ChessBoard board, ChessPosition myPosition, TeamColor pieceColor) {
 
@@ -231,7 +228,7 @@ public class ChessGame {
     public boolean rookCheck(ChessBoard board, ChessPosition myPosition, TeamColor pieceColor){
 
         int i = myPosition.getRow()+1;
-        int j = myPosition.getColumn();;
+        int j = myPosition.getColumn();
         while (i <= 8) {
             ChessPiece otherPiece = board.getPiece(new ChessPosition(i,j));
             if(otherPiece == null) {
@@ -355,9 +352,7 @@ public class ChessGame {
             if (i-1 >= 1) {
                 ChessPiece otherPiece = board.getPiece(new ChessPosition(i - 1, j));
                 if (otherPiece == null) {
-                } else if (otherPiece.getTeamColor() != pieceColor && otherPiece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-                    return true;
-                }
+                } else return otherPiece.getTeamColor() != pieceColor && otherPiece.getPieceType() == ChessPiece.PieceType.KNIGHT;
             }
         }
         return false;
@@ -416,7 +411,7 @@ public class ChessGame {
 
         int positioni = myPosition.getRow();
         int positionj = myPosition.getColumn();
-        ChessPiece otherPiece = board.getPiece(new ChessPosition(positioni, positionj));
+        ChessPiece otherPiece;
         for (int i = positioni - 1; i <= positioni + 1; i++) {
             for (int j = positionj - 1; j <= positionj + 1; j++) {
                 if ((i >= 1 && i <= 8) && (j >= 1 && j <= 8) && !(i == positioni && j == positionj)) {
@@ -458,10 +453,7 @@ public class ChessGame {
         ArrayList<ChessMove> moves;
         moves = new ArrayList<>();
         moves.addAll(getAllValidMoves(teamColor));
-        if(moves.isEmpty()){
-            return true;
-        }
-        return false;
+        return moves.isEmpty();
     }
     /**
      * Determines if the given team is in stalemate, which here is defined as having
@@ -475,9 +467,7 @@ public class ChessGame {
             ArrayList<ChessMove> moves;
             moves = new ArrayList<>();
             moves.addAll(getAllValidMoves(teamColor));
-            if(moves.isEmpty()){
-                return true;
-            }
+            return moves.isEmpty();
         }
         return false;
     }

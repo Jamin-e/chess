@@ -122,7 +122,7 @@ public class ChessBoard {
             }
         }
         return "ChessBoard{" +
-                "squares=" + debug.toString() +
+                "squares=" + debug +
                 '}';
     }
 }
