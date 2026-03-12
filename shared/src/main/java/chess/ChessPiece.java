@@ -255,99 +255,91 @@ public class ChessPiece {
         return moves;
     }
 
+    public List<ChessMove> checkLeft(ChessBoard board, ChessPosition myPosition, int i, int j){
+        List<ChessMove> moves = new ArrayList<>();
+        if (j-1 >= 1){
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j-1));
+            if (otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
+            } else if (otherPiece.pieceColor == this.pieceColor) {
+            } else {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
+            }
+        }
+        return moves;
+    }
+
+    public List<ChessMove> checkRight(ChessBoard board, ChessPosition myPosition, int i, int j){
+        List<ChessMove> moves = new ArrayList<>();
+        if (j+1 <= 8){
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j+1));
+            if (otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
+            } else if (otherPiece.pieceColor == this.pieceColor) {
+            } else {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
+            }
+        }
+        return moves;
+    }
+
+    public List<ChessMove> checkUp(ChessBoard board, ChessPosition myPosition, int i, int j){
+        List<ChessMove> moves = new ArrayList<>();
+        if (i+1 <= 8){
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i+1, j));
+            if (otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
+            } else if (otherPiece.pieceColor == this.pieceColor) {
+            } else {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
+            }
+        }
+        return moves;
+    }
+
+    public List<ChessMove> checkDown(ChessBoard board, ChessPosition myPosition, int i, int j){
+        List<ChessMove> moves = new ArrayList<>();
+        if (i-1 >= 1){
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i-1, j));
+            if (otherPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
+            } else if (otherPiece.pieceColor == this.pieceColor) {
+            } else {
+                moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
+            }
+        }
+        return moves;
+    }
+
     public List<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition){
         List<ChessMove> moves = new ArrayList<>();
 
         int i = myPosition.getRow()+2;
         int j = myPosition.getColumn();
         if (i <= 8) {
-            if (j+1 <= 8){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j+1));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
-                }
-            }
-            if (j-1 >= 1){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j-1));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
-                }
-            }
+            moves.addAll(checkRight(board,myPosition,i,j));
+            moves.addAll(checkLeft(board,myPosition,i,j));
         }
 
         i = myPosition.getRow()-2;
         j = myPosition.getColumn();
         if (i >= 1) {
-            if (j+1 <= 8){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j+1));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j+1), null));
-                }
-            }
-            if (j-1 >= 1){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j-1));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i, j-1), null));
-                }
-            }
+            moves.addAll(checkRight(board,myPosition,i,j));
+            moves.addAll(checkLeft(board,myPosition,i,j));
         }
 
         i = myPosition.getRow();
         j = myPosition.getColumn()+2;
         if (j <= 8) {
-            if (i+1 <= 8){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i+1, j));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
-                }
-            }
-            if (i-1 >= 1){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i-1, j));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
-                }
-            }
+            moves.addAll(checkUp(board,myPosition,i,j));
+            moves.addAll(checkDown(board,myPosition,i,j));
         }
 
         i = myPosition.getRow();
         j = myPosition.getColumn()-2;
         if (j >= 1) {
-            if (i+1 <= 8){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i+1, j));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j), null));
-                }
-            }
-            if (i-1 >= 1){
-                ChessPiece otherPiece = board.getPiece(new ChessPosition(i-1, j));
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
-                } else if (otherPiece.pieceColor == this.pieceColor) {
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i-1, j), null));
-                }
-            }
+            moves.addAll(checkUp(board,myPosition,i,j));
+            moves.addAll(checkDown(board,myPosition,i,j));
         }
 
         return moves;
