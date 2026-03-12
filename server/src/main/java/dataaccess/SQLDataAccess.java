@@ -18,9 +18,8 @@ public class SQLDataAccess implements DataAccess{
     private final Gson gson = new Gson();
 
     public void clear() throws DataAccessException{
-        var sql = "TRUNCATE TABLE auth; TRUNCATE TABLE game; TRUNCATE TABLE user;";
         try(var conn = DatabaseManager.getConnection();
-            var ps = conn.prepareStatement(sql)){
+            var ps = conn.createStatement()){
             ps.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
             ps.executeUpdate("TRUNCATE TABLE auth");
             ps.executeUpdate("TRUNCATE TABLE game");
@@ -114,7 +113,7 @@ public class SQLDataAccess implements DataAccess{
     public int createGame(String gamename) throws DataAccessException{
         String json = gson.toJson(new ChessGame());
         var sql = """
-                INSERT INTO game (game_name, white_name, black_username, game_state) VALUES (?,?,?,?)""";
+                INSERT INTO game (game_name, white_username, black_username, game_state) VALUES (?,?,?,?)""";
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1,gamename);
@@ -148,7 +147,7 @@ public class SQLDataAccess implements DataAccess{
 
             try (var query = ps.executeQuery()){
                 if(!query.next()){
-                    throw new DataAccessException("game does not exist");
+                    return null;
                 }
                 int gameId = query.getInt("id");
                 String name = query.getString("game_name");

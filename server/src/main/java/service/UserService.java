@@ -61,14 +61,13 @@ public class UserService {
         || loginRequest.username() == null || loginRequest.username().isBlank()){
             throw new DataAccessException("Error: bad request");
         }
-        String hashedPassword = BCrypt.hashpw(loginRequest.username(), BCrypt.gensalt());
-        UserData user =  dataAccess.getUser(hashedPassword);
+        UserData user =  dataAccess.getUser(loginRequest.username());
         if(user == null){
             throw new DataAccessException("Error: unauthorized");
         }
 
 
-        if(!user.password().equals(hashedPassword)){
+        if(!BCrypt.checkpw(loginRequest.password(), user.password())){
             throw new DataAccessException("Error: unauthorized");
         }
 

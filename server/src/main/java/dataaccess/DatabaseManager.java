@@ -106,7 +106,7 @@ public class DatabaseManager {
 
     private static final String CREATE_AUTH_TOKEN_TABLE= """
         CREATE TABLE IF NOT EXISTS auth (
-        token VARCHAR(255),
+        token VARCHAR(255) PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(username) REFERENCES user(username) ON DELETE CASCADE
