@@ -120,4 +120,44 @@ public class ClientApp {
         }
     }
 
+    private void handleLogout(String[] args){
+        if(args.length != 2){
+            System.out.println("Invalid number of arguments");
+        }else{
+            //connect to server
+        }
+    }
+
+    private void handleList(String[] args){
+        if(args.length != 2){
+            System.out.println("Invalid number of arguments");
+        }else{
+            //connect to server
+        }
+    }
+
+    private void handleCreate(String[] args){
+        if(args.length != 3){
+            System.out.println("Invalid number of arguments");
+        }else{
+            //connect to server
+        }
+    }
+
+    private void handleJoin(String[] args){
+        if(args.length != 4){
+            System.out.println("Invalid number of arguments");
+        }else{
+            //connect to server
+        }
+    }
+
+    private void handleObserve(String[] args){
+        if(args.length != 3){
+            System.out.println("Invalid number of arguments");
+        }else{
+            //connect to server
+        }
+    }
+
 }
