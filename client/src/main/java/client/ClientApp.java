@@ -54,12 +54,8 @@ public class ClientApp {
                 System.out.println("Quitting now");
                 return false;
             }
-            case "login" -> {
-                handleLogin(tokens);
-            }
-            case "register" -> {
-                handleRegister(tokens);
-            }
+            case "login" -> {handleLogin(tokens);}
+            case "register" -> {handleRegister(tokens);}
             default -> System.out.println("Unknown command. Type 'help' for list of commands");
         }
         return true;
@@ -68,21 +64,12 @@ public class ClientApp {
     private boolean handlePostlogin(String cmd, String[] tokens){
         switch (cmd){
             case "help" -> printPostLoginHelp();
-            case "logout" ->{
-                handleLogout(tokens);
+            case "logout" ->{handleLogout(tokens);}
+            case "create" ->{handleCreate(tokens);}
+            case "list" ->{handleList(tokens);}
+            case "play" ->{handlePlay(tokens);
             }
-            case "create" ->{
-                handleCreate(tokens);
-            }
-            case "list" ->{
-                handleList(tokens);
-            }
-            case "play" ->{
-                handlePlay(tokens);
-            }
-            case "observe" ->{
-                handleObserve(tokens);
-            }
+            case "observe" ->{handleObserve(tokens);}
             default -> System.out.println("Unknown command. Type 'help' for list of commands");
         }
         return true;
@@ -144,7 +131,7 @@ public class ClientApp {
         }
     }
 
-    private void handleJoin(String[] args){
+    private void handlePlay(String[] args){
         if(args.length != 4){
             System.out.println("Invalid number of arguments");
         }else{
