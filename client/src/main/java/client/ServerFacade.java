@@ -33,15 +33,15 @@ public class ServerFacade {
         delete("/session", Void.class, authToken);
     }
     public List<GameData> listGames(String authToken) throws DataAccessException{
-        ListGamesResponse response = get("/game", ListGamesResponse.class, authToken);
-        return response.games();
+        ListResult response = get("/game", ListResult.class, authToken);
+        return (List<GameData>) response.games();
     }
     public GameData createGame(String authToken, String gameName) throws DataAccessException{
-        var request = new CreateGameRequest(gameName);
+        var request = new CreateRequest(authToken, gameName);
         return post("/game", request, GameData.class, authToken);
     }
-    public void joinGame(String authToken, int gameID, String color) throws DataAccessException{
-        var request = new JoinGameRequest(gameId, color);
+    public void joinGame(String authToken, String gameID, String color) throws DataAccessException{
+        var request = new JoinRequest(authToken, color, gameID);
         put("/game", request, Void.class, authToken);
     }
     public GameData observeGame(String authToken, int gameID) throws DataAccessException{

@@ -53,7 +53,7 @@ public class renderer {
                 var pos = new ChessPosition(row,col);
                 ChessPiece piece = board.getPiece(pos);
                 String pieceStr = pieceToStringWhite(piece);
-                System.out.print(" "+ pieceStr + " ");
+                System.out.print(EscapeSequences.EMPTY + pieceStr + EscapeSequences.EMPTY);
             }
             System.out.println();
         }
@@ -67,7 +67,7 @@ public class renderer {
                 var pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
                 String pieceStr = pieceToStringBlack(piece);
-                System.out.print(" " + pieceStr + " ");
+                System.out.print(EscapeSequences.EMPTY + pieceStr + EscapeSequences.EMPTY);
             }
             System.out.println();
         }

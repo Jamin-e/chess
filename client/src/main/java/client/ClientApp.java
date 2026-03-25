@@ -188,8 +188,7 @@ public class ClientApp {
             System.out.println("Invalid number of arguments");
         } else {
             try {
-                int num = Integer.parseInt(args[2]);
-                facade.joinGame(args[1], num, args[3]);
+                facade.joinGame(args[1], args[2], args[3]);
             } catch (DataAccessException e) {
                 System.out.println(e);
             }
