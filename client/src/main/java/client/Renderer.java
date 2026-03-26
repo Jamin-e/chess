@@ -49,7 +49,8 @@ public class Renderer {
 
     private static void drawWhite(ChessBoard board){
         String empty = EscapeSequences.EMPTY;
-        System.out.println(empty + "a" + empty + "b" + empty + "c" + empty + "d" + empty + "e" + empty + "f" + empty + "g" + empty + "h");
+        String empty3 = empty + empty + empty;
+        System.out.println(empty3 + "a" + empty3 + "b" + empty3 + "c" + empty3 + "d" + empty3 + "e" + empty3 + "f" + empty3 + "g" + empty3 + "h");
         for(int row = 8; row >= 1; row--){
             System.out.print(" " + row + " ");
             for (int col = 1; col <= 8; col++){
@@ -72,7 +73,8 @@ public class Renderer {
 
     private static void drawBlack(ChessBoard board) {
         String empty = EscapeSequences.EMPTY;
-        System.out.println(empty + "h" + empty + "g" + empty + "f" + empty + "e" + empty + "d" + empty + "c" + empty + "b" + empty + "a");
+        String empty3 = empty + empty + empty;
+        System.out.println(empty + "  h" + empty3 + "g" + empty3 + "f" + empty3 + "e" + empty3 + "d" + empty3 + "c" + empty3 + "b" + empty3 + "a");
         for (int row = 1; row <= 8; row++) {
             System.out.print(" " + row + " ");
             for (int col = 8; col >= 1; col--) {
