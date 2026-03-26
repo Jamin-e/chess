@@ -18,58 +18,58 @@ public class MemoryDataAccess implements DataAccess {
         games.clear();
     }
 
-    public void createUser(UserData user) throws DataAccessException{
+    public void createUser(UserData user) throws Exception {
         if(users.containsKey(user.username())){
-            throw new DataAccessException("user already exists");
+            throw new Exception("user already exists");
         }
         users.put(user.username(),user);
     }
 
-    public UserData getUser(String username) throws DataAccessException{
+    public UserData getUser(String username) throws Exception {
         if(!users.containsKey(username)){
             return null;
         }
         return users.get(username);
     }
 
-    public void createAuth(AuthData auth) throws DataAccessException {
+    public void createAuth(AuthData auth) throws Exception {
         if(auths.containsKey(auth.authToken())){
-            throw new DataAccessException("auth already exists");
+            throw new Exception("auth already exists");
         }
         auths.put(auth.authToken(),auth);
     }
 
-    public AuthData getAuth(String authToken) throws DataAccessException{
+    public AuthData getAuth(String authToken) throws Exception {
         if(!auths.containsKey(authToken)){
             return null;
         }
         return auths.get(authToken);
     }
 
-    public void deleteAuth(String authToken) throws DataAccessException {
+    public void deleteAuth(String authToken) throws Exception {
         if(!auths.containsKey(authToken)){
-            throw new DataAccessException("auth does not exist");
+            throw new Exception("auth does not exist");
         }
         auths.remove(authToken);
     }
 
-    public int createGame(String gamename) throws DataAccessException{
+    public int createGame(String gamename) throws Exception {
         int gameID = games.size() + 1;
         games.put(gameID, new GameData(gameID,null,null, gamename, new ChessGame()));
 
                 return gameID;
     }
 
-    public GameData getGame(int gameID) throws DataAccessException{
+    public GameData getGame(int gameID) throws Exception {
         if(!games.containsKey(gameID)){
-            throw new DataAccessException("game does not exist");
+            throw new Exception("game does not exist");
         }
         return games.get(gameID);
     }
 
-    public JoinResult joinGame(GameData game, String color, String username) throws DataAccessException{
+    public JoinResult joinGame(GameData game, String color, String username) throws Exception {
         if(!games.containsKey(game.gameID())){
-            throw new DataAccessException("game does not exist");
+            throw new Exception("game does not exist");
         }
 
         if (Objects.equals(color, "WHITE")){

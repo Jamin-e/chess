@@ -1,6 +1,5 @@
 package ui;
 
-import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 
@@ -91,6 +90,7 @@ public class ClientApp {
             case "observe" -> {
                 handleObserve(tokens);
             }
+            case "delete" -> facade.clear();
             default -> System.out.println("Unknown command. Type 'help' for list of commands");
         }
         return true;
@@ -119,7 +119,7 @@ public class ClientApp {
             try {
                 authData = facade.login(args[1], args[2]);
                 state = State.POSTLOGIN;
-            } catch (DataAccessException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -132,7 +132,7 @@ public class ClientApp {
             try {
                 authData = facade.register(args[1], args[2], args[3]);
                 state = State.POSTLOGIN;
-            } catch (DataAccessException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -148,7 +148,7 @@ public class ClientApp {
                 facade.logout(authData.authToken());
                 authData = null;
                 state = State.PRELOGIN;
-            } catch (DataAccessException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -166,7 +166,7 @@ public class ClientApp {
                     var g = games.get(i);
                     System.out.printf("%d: %s (id=%d)%n", i, g.gameName(), g.gameID());
                 }
-            } catch (DataAccessException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -180,7 +180,7 @@ public class ClientApp {
         } else {
             try {
                 GameData game = facade.createGame(authData.authToken(), args[1]);
-            } catch (DataAccessException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -196,7 +196,7 @@ public class ClientApp {
             try {
                 GameData game = facade.joinGame(authData.authToken(), args[1], args[2]);
                 Renderer.drawBoard(game.game(),args[2]);
-            } catch (DataAccessException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }

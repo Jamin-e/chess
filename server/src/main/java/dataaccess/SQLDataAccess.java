@@ -7,17 +7,15 @@ import model.GameData;
 import model.UserData;
 import service.JoinResult;
 
-import java.sql.DriverManager;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Properties;
 
 public class SQLDataAccess implements DataAccess{
     private final Gson gson = new Gson();
 
-    public void clear() throws DataAccessException{
+    public void clear() throws Exception {
         try(var conn = DatabaseManager.getConnection();
             var ps = conn.createStatement()){
             ps.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
@@ -27,11 +25,11 @@ public class SQLDataAccess implements DataAccess{
             ps.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
         }
         catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public void createUser(UserData user) throws DataAccessException{
+    public void createUser(UserData user) throws Exception {
         var sql = "INSERT INTO user (username, password_hash, email) VALUES (?, ?, ?)";
         try(var conn = DatabaseManager.getConnection();
                 var ps = conn.prepareStatement(sql)){
@@ -41,11 +39,11 @@ public class SQLDataAccess implements DataAccess{
             ps.executeUpdate();
     }
     catch(SQLException e){
-        throw new DataAccessException(e.getMessage());
+        throw new Exception(e.getMessage());
     }
     }
 
-    public UserData getUser(String username) throws DataAccessException {
+    public UserData getUser(String username) throws Exception {
         var sql = "SELECT username, password_hash, email FROM user WHERE username = ?";
         try (var conn = DatabaseManager.getConnection();
              var ps = conn.prepareStatement(sql)) {
@@ -61,11 +59,11 @@ public class SQLDataAccess implements DataAccess{
                 );
             }
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage(), e);
+            throw new Exception(e.getMessage(), e);
         }
     }
 
-    public void createAuth(AuthData auth) throws DataAccessException {
+    public void createAuth(AuthData auth) throws Exception {
         var sql = "INSERT INTO auth (token, username) VALUES (?, ?)";
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql)){
@@ -75,11 +73,11 @@ public class SQLDataAccess implements DataAccess{
 
         }
         catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public AuthData getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws Exception {
         var sql = "SELECT token, username FROM auth WHERE token = ?";
         try (var conn = DatabaseManager.getConnection();
              var ps = conn.prepareStatement(sql)) {
@@ -94,11 +92,11 @@ public class SQLDataAccess implements DataAccess{
                 );
             }
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage(), e);
+            throw new Exception(e.getMessage(), e);
         }
     }
 
-    public void deleteAuth(String authToken) throws DataAccessException {
+    public void deleteAuth(String authToken) throws Exception {
         var sql = "DELETE FROM auth WHERE token = ?";
         try(var conn = DatabaseManager.getConnection();
         var ps = conn.prepareStatement(sql)){
@@ -106,11 +104,11 @@ public class SQLDataAccess implements DataAccess{
             ps.executeUpdate();
         }
         catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public int createGame(String gamename) throws DataAccessException{
+    public int createGame(String gamename) throws Exception {
         String json = gson.toJson(new ChessGame());
         var sql = """
                 INSERT INTO game (game_name, white_username, black_username, game_state) VALUES (?,?,?,?)""";
@@ -123,22 +121,22 @@ public class SQLDataAccess implements DataAccess{
 
             int affected = ps.executeUpdate();
             if (affected == 0) {
-                throw new DataAccessException("Creating game failed, no rows affected");
+                throw new Exception("Creating game failed, no rows affected");
             }
             try (var key = ps.getGeneratedKeys()) {
                 if (key.next()) {
                     return key.getInt(1);
                 } else {
-                    throw new DataAccessException("No id for created game");
+                    throw new Exception("No id for created game");
                 }
             }
         }
         catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public GameData getGame(int gameID) throws DataAccessException{
+    public GameData getGame(int gameID) throws Exception {
         var sql = """
         SELECT id, game_name, white_username, black_username, game_state FROM game WHERE id = ?""";
         try(var conn = DatabaseManager.getConnection();
@@ -161,11 +159,11 @@ public class SQLDataAccess implements DataAccess{
             }
         }
         catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public JoinResult joinGame(GameData game, String color, String username) throws DataAccessException{
+    public JoinResult joinGame(GameData game, String color, String username) throws Exception {
         String sql;
         if (Objects.equals(color, "WHITE")) {
             if (game.whiteUsername() != null) {
@@ -184,16 +182,16 @@ public class SQLDataAccess implements DataAccess{
             ps.setInt(2, game.gameID());
             int updated = ps.executeUpdate();
             if (updated == 0) {
-                throw new DataAccessException("Game not found when joining");
+                throw new Exception("Game not found when joining");
             }
             return new JoinResult();
         }
         catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
-    public Collection<GameData> listGames() throws DataAccessException{
+    public Collection<GameData> listGames() throws Exception {
         var sql = """
         SELECT id, game_name, white_username, black_username, game_state FROM game;""";
         var result = new ArrayList<GameData>();
@@ -215,7 +213,7 @@ public class SQLDataAccess implements DataAccess{
 
         }
         catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 

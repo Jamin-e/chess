@@ -1,19 +1,13 @@
 package service;
 
-import com.google.gson.Gson;
 import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.DatabaseManager;
-import io.javalin.http.Context;
-import io.javalin.http.Handler;
+import dataaccess.Exception;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
-import server.ClearHandler;
 
 
-import java.util.Map;
 import java.util.UUID;
 
 public class UserService {
@@ -29,17 +23,17 @@ public class UserService {
 
     private record ErrorResponse(String message) {}
 
-    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException{
+    public RegisterResult register(RegisterRequest registerRequest) throws Exception {
         if(registerRequest == null
         || registerRequest.username() == null || registerRequest.username().isBlank()
         || registerRequest.password() == null || registerRequest.password().isBlank()
         || registerRequest.email() == null || registerRequest.email().isBlank()){
-            throw new DataAccessException("Error: bad request");
+            throw new Exception("Error: bad request");
         }
 
         UserData user = dataAccess.getUser(registerRequest.username());
         if(user != null){
-            throw new DataAccessException("Error: username already taken");
+            throw new Exception("Error: username already taken");
         }
 
         String hashedPassword = BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt());
@@ -55,20 +49,20 @@ public class UserService {
 
     }
 
-    public LoginResult login(LoginRequest loginRequest) throws DataAccessException{
+    public LoginResult login(LoginRequest loginRequest) throws Exception {
         if(loginRequest == null
         || loginRequest.password() == null || loginRequest.password().isBlank()
         || loginRequest.username() == null || loginRequest.username().isBlank()){
-            throw new DataAccessException("Error: bad request");
+            throw new Exception("Error: bad request");
         }
         UserData user =  dataAccess.getUser(loginRequest.username());
         if(user == null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new Exception("Error: unauthorized");
         }
 
 
         if(!BCrypt.checkpw(loginRequest.password(), user.password())){
-            throw new DataAccessException("Error: unauthorized");
+            throw new Exception("Error: unauthorized");
         }
 
         String token = UUID.randomUUID().toString();
@@ -78,14 +72,14 @@ public class UserService {
         return new LoginResult(user.username(), token);
     }
 
-    public LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException{
+    public LogoutResult logout(LogoutRequest logoutRequest) throws Exception {
         if (logoutRequest == null
         || logoutRequest.authToken() == null || logoutRequest.authToken().isEmpty()){
-            throw new DataAccessException("Error: bad request");
+            throw new Exception("Error: bad request");
         }
         String authToken = logoutRequest.authToken();
         if(dataAccess.getAuth(authToken) == null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new Exception("Error: unauthorized");
         }
 
         dataAccess.deleteAuth(authToken);
@@ -93,16 +87,16 @@ public class UserService {
 
     }
 
-    public CreateResult create(CreateRequest createRequest) throws DataAccessException{
+    public CreateResult create(CreateRequest createRequest) throws Exception {
         if(createRequest == null
         || createRequest.authToken() == null || createRequest.authToken().isBlank()
         || createRequest.gameName() == null || createRequest.gameName().isBlank()){
-            throw new DataAccessException("Error: bad request");
+            throw new Exception("Error: bad request");
         }
 
         AuthData auth = dataAccess.getAuth(createRequest.authToken());
         if(auth == null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new Exception("Error: unauthorized");
         }
 
         int gameID = dataAccess.createGame(createRequest.gameName());
@@ -110,46 +104,46 @@ public class UserService {
         return new CreateResult(gameID);
     }
 
-    public JoinResult join(JoinRequest joinRequest) throws DataAccessException{
+    public JoinResult join(JoinRequest joinRequest) throws Exception {
         if(joinRequest == null
             || joinRequest.authToken() == null || joinRequest.authToken().isBlank()
             || joinRequest.gameID() == null || joinRequest.gameID().isBlank()
             || joinRequest.playerColor() == null || joinRequest.playerColor().isBlank()) {
-            throw new DataAccessException("Error: bad request");
+            throw new Exception("Error: bad request");
         }
 
         AuthData auth = dataAccess.getAuth(joinRequest.authToken());
         if(auth == null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new Exception("Error: unauthorized");
         }
 
         if((!joinRequest.playerColor().equals("WHITE")) && (!joinRequest.playerColor().equals("BLACK"))){
-           throw new DataAccessException("Error: bad request");
+           throw new Exception("Error: bad request");
         }
 
         GameData game = dataAccess.getGame(Integer.parseInt(joinRequest.gameID()));
 
         JoinResult joinResult = dataAccess.joinGame(game, joinRequest.playerColor(),auth.username());
         if(joinResult == null){
-            throw new DataAccessException("Error: already taken");
+            throw new Exception("Error: already taken");
         }
 
         return joinResult;
 
     }
 
-    public void clear(ClearRequest clearRequest) throws DataAccessException{
+    public void clear(ClearRequest clearRequest) throws Exception {
         dataAccess.clear();
     }
 
-    public ListResult list(ListRequest listRequest) throws DataAccessException{
+    public ListResult list(ListRequest listRequest) throws Exception {
         if (listRequest == null
                 || listRequest.authToken() == null || listRequest.authToken().isEmpty()){
-            throw new DataAccessException("Error: bad request");
+            throw new Exception("Error: bad request");
         }
         String authToken = listRequest.authToken();
         if(dataAccess.getAuth(authToken) == null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new Exception("Error: unauthorized");
         }
 
         var games = dataAccess.listGames();

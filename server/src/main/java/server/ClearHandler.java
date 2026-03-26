@@ -1,12 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
+import dataaccess.Exception;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import service.ClearRequest;
-import service.ClearResult;
 import service.UserService;
 
 
@@ -28,7 +26,7 @@ public class ClearHandler {
 
             ctx.status(200);
         }
-        catch(DataAccessException e) {
+        catch(Exception e) {
             String message = e.getMessage();
             ctx.status(500);
             message = "Error: " + message;

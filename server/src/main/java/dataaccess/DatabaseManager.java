@@ -19,20 +19,20 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static public void createDatabase() throws DataAccessException {
+    static public void createDatabase() throws Exception {
         var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new DataAccessException("failed to create database", ex);
+            throw new Exception("failed to create database", ex);
         }
     }
 
     /**
     * creates the tables of a database if it does not already exist
     */
-    static public void createTables() throws DataAccessException {
+    static public void createTables() throws Exception {
         try (var conn = DatabaseManager.getConnection();
          var preparedStatementUser = conn.prepareStatement(CREATE_USER_TABLE);
          var preparedStatementAuth = conn.prepareStatement(CREATE_AUTH_TOKEN_TABLE);
@@ -42,7 +42,7 @@ public class DatabaseManager {
             preparedStatementGame.executeUpdate();
         }
         catch(SQLException ex){
-            throw new DataAccessException("failed to create tables", ex);
+            throw new Exception("failed to create tables", ex);
         }
     }
 
@@ -58,26 +58,26 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    public static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws Exception {
         try {
             //do not wrap the following line with a try-with-resources
             var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
             conn.setCatalog(databaseName);
             return conn;
         } catch (SQLException ex) {
-            throw new DataAccessException("failed to get connection", ex);
+            throw new Exception("failed to get connection", ex);
         }
     }
 
     private static void loadPropertiesFromResources() {
         try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
             if (propStream == null) {
-                throw new Exception("Unable to load db.properties");
+                throw new java.lang.Exception("Unable to load db.properties");
             }
             Properties props = new Properties();
             props.load(propStream);
             loadProperties(props);
-        } catch (Exception ex) {
+        } catch (java.lang.Exception ex) {
             throw new RuntimeException("unable to process db.properties", ex);
         }
     }

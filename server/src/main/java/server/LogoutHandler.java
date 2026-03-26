@@ -1,8 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
+import dataaccess.Exception;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import service.LogoutRequest;
@@ -32,7 +31,7 @@ public class LogoutHandler {
             ctx.contentType("application/json");
             ctx.result("{ }");
         }
-        catch(DataAccessException e) {
+        catch(Exception e) {
             String message = e.getMessage();
             int status;
             if ("Error: unauthorized".equals(message)) {

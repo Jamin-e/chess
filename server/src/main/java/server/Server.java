@@ -1,5 +1,6 @@
 package server;
 import dataaccess.*;
+import dataaccess.Exception;
 import service.UserService;
 
 import io.javalin.*;
@@ -38,7 +39,7 @@ public class Server {
         try {
             DatabaseManager.createDatabase();
             DatabaseManager.createTables();
-        } catch(DataAccessException e){
+        } catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }

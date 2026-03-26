@@ -1,7 +1,6 @@
 package server;
 import com.google.gson.Gson;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
+import dataaccess.Exception;
 import service.UserService;
 import service.LoginRequest;
 import service.LoginResult;
@@ -28,7 +27,7 @@ public class LoginHandler{
             ctx.status(200);
             ctx.result(gson.toJson(result));
         }
-        catch(DataAccessException e) {
+        catch(Exception e) {
             String message = e.getMessage();
             int status;
             if ("Error: bad request".equals(message)) {
