@@ -1,10 +1,9 @@
-package client;
+package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import ui.EscapeSequences;
 
 import java.util.Objects;
 

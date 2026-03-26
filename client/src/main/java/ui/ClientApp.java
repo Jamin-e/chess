@@ -1,4 +1,4 @@
-package client;
+package ui;
 
 import dataaccess.DataAccessException;
 import model.AuthData;
