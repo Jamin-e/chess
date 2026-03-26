@@ -164,7 +164,7 @@ public class ClientApp {
                 games = facade.listGames(authData.authToken());
                 for (int i = 0; i < games.size(); i++){
                     var g = games.get(i);
-                    System.out.printf("%d: %s (id=%d)%n", i, g.gameName(), g.gameID());
+                    System.out.printf("%d: %s WHITE:%s|BLACK:%s %n", i, g.gameName(),g.whiteUsername(),g.blackUsername());
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -180,6 +180,7 @@ public class ClientApp {
         } else {
             try {
                 GameData game = facade.createGame(authData.authToken(), args[1]);
+                games.add(game);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -188,14 +189,29 @@ public class ClientApp {
 
     private void handlePlay(String[] args) {
         if (args.length != 3) {
-            System.out.println("Usage: play <gameID> <WHITE|BLACK>");
+            System.out.println("Usage: play <index> <WHITE|BLACK>");
         } else if (authData == null) {
             System.out.println("You must login first");
         }
         else {
             try {
-                GameData game = facade.joinGame(authData.authToken(), args[1], args[2]);
-                Renderer.drawBoard(game.game(),args[2]);
+                int index = Integer.parseInt(args[1]);
+
+                if (index < 0 || index >= games.size()) {
+                    System.out.println("Invalid game index");
+                    return;
+                }
+
+                String color = args[2].toUpperCase();
+                if (!color.equals("WHITE") && !color.equals("BLACK")) {
+                    System.out.println("Color must be WHITE or BLACK");
+                    return;
+                }
+
+                GameData selected = games.get(index);
+                facade.joinGame(authData.authToken(), selected.gameID(), color);
+
+                Renderer.drawBoard(selected.game(), color);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

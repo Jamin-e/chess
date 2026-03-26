@@ -53,7 +53,7 @@ public class ServerFacade {
         return post("/game", request, GameData.class, authToken);
     }
 
-    public GameData joinGame(String authToken, String gameID, String color) throws Exception {
+    public GameData joinGame(String authToken, int gameID, String color) throws Exception {
         var request = new java.util.HashMap<String, Object>();
         request.put("playerColor", color);
         request.put("gameID", gameID);
@@ -172,7 +172,7 @@ public class ServerFacade {
             throw new Exception(e.getMessage());
         }
     }
-    public class ListResult {
+    public static class ListResult {
         private List<GameData> games;
 
         public List<GameData> getGames() {
