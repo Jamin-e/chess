@@ -48,29 +48,46 @@ public class Renderer {
     }
 
     private static void drawWhite(ChessBoard board){
-        System.out.println("   a b c d e f g h");
+        String empty = EscapeSequences.EMPTY;
+        System.out.println(empty + "a" + empty + "b" + empty + "c" + empty + "d" + empty + "e" + empty + "f" + empty + "g" + empty + "h");
         for(int row = 8; row >= 1; row--){
             System.out.print(" " + row + " ");
             for (int col = 1; col <= 8; col++){
                 var pos = new ChessPosition(row,col);
                 ChessPiece piece = board.getPiece(pos);
-                String pieceStr = pieceToStringWhite(piece);
-                System.out.print(EscapeSequences.EMPTY + pieceStr + EscapeSequences.EMPTY);
+                String pieceStr;
+                if(piece == null){
+                    pieceStr = empty;
+                }
+                else{
+                    pieceStr = pieceToStringWhite(piece);
+                }
+
+                System.out.print(empty + pieceStr + empty);
             }
+            System.out.println();
             System.out.println();
         }
     }
 
     private static void drawBlack(ChessBoard board) {
-        System.out.println("   h g f e d c b a");
+        String empty = EscapeSequences.EMPTY;
+        System.out.println(empty + "h" + empty + "g" + empty + "f" + empty + "e" + empty + "d" + empty + "c" + empty + "b" + empty + "a");
         for (int row = 1; row <= 8; row++) {
             System.out.print(" " + row + " ");
             for (int col = 8; col >= 1; col--) {
                 var pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
-                String pieceStr = pieceToStringBlack(piece);
-                System.out.print(EscapeSequences.EMPTY + pieceStr + EscapeSequences.EMPTY);
+                String pieceStr;
+                if(piece == null){
+                    pieceStr = empty;
+                }
+                else{
+                    pieceStr = pieceToStringWhite(piece);
+                }
+                System.out.print(empty + pieceStr + empty);
             }
+            System.out.println();
             System.out.println();
         }
     }
