@@ -121,86 +121,102 @@ public class ClientApp {
 
     private void handleLogin(String[] args) {
         if (args.length != 3) {
-            System.out.println("Invalid number of arguments");
+            System.out.println("Usage: login <username> <password>");
         } else {
             try {
                 facade.login(args[1], args[2]);
                 state = State.POSTLOGIN;
             } catch (DataAccessException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }
 
     private void handleRegister(String[] args) {
         if (args.length != 4) {
-            System.out.println("Invalid number of arguments");
+            System.out.println("Usage: register <username> <password> <email>");
         } else {
             try {
                 authData = facade.register(args[1], args[2], args[3]);
                 state = State.POSTLOGIN;
             } catch (DataAccessException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }
 
     private void handleLogout(String[] args) {
-        if (args.length != 2) {
-            System.out.println("Invalid number of arguments");
+        if (args.length != 1) {
+            System.out.println("Usage: logout");
+        } else if (authData == null){
+            System.out.println("You are not logged in");
         } else {
             try {
-                facade.logout(args[1]);
+                facade.logout(authData.authToken());
                 authData = null;
                 state = State.PRELOGIN;
             } catch (DataAccessException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }
 
     private void handleList(String[] args) {
-        if (args.length != 2) {
-            System.out.println("Invalid number of arguments");
+        if (args.length != 1) {
+            System.out.println("Usage: list");
+        } else if (authData == null) {
+            System.out.println("You must login first");
         } else {
             try {
-                games = facade.listGames(args[1]);
+                games = facade.listGames(authData.authToken());
+                for (int i = 0; i < games.size(); i++){
+                    var g = games.get(i);
+                    System.out.printf("%d: %s (id=%d)%n", i, g.gameName(), g.gameID());
+                }
             } catch (DataAccessException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }
 
     private void handleCreate(String[] args) {
-        if (args.length != 3) {
-            System.out.println("Invalid number of arguments");
+        if (args.length != 2) {
+            System.out.println("Usage: create <gameName>");
+        } else if (authData == null){
+            System.out.println("You must login first");
         } else {
             try {
-                GameData game = facade.createGame(args[1], args[2]);
+                GameData game = facade.createGame(authData.authToken(), args[1]);
             } catch (DataAccessException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }
 
     private void handlePlay(String[] args) {
-        if (args.length != 4) {
-            System.out.println("Invalid number of arguments");
-        } else {
+        if (args.length != 3) {
+            System.out.println("Usage: play <gameID> <WHITE|BLACK>");
+        } else if (authData == null) {
+            System.out.println("You must login first");
+        }
+        else {
             try {
-                facade.joinGame(args[1], args[2], args[3]);
+                facade.joinGame(authData.authToken(), args[1], args[2]);
             } catch (DataAccessException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }
 
     private void handleObserve(String[] args) {
-        if (args.length != 3) {
-            System.out.println("Invalid number of arguments");
-        } else {
+        if (args.length != 2) {
+            System.out.println("Usage: observe <indexFromList>");
+        } else if (authData == null){
+            System.out.println("You must login first");
+        }
+        else {
             try {
-                int num = Integer.parseInt(args[2]);
+                int num = Integer.parseInt(args[1]);
                 GameData game = games.get(num);
             } catch (Exception e) {
                 System.out.println(e);
