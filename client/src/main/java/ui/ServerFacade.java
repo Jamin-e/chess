@@ -22,12 +22,17 @@ public class ServerFacade {
     }
 
     public AuthData register(String username, String password, String email) throws Exception {
-        var request = new RegisterRequest(username, password, email);
+        var request = new java.util.HashMap<String, Object>();
+        request.put("username", username);
+        request.put("password", password);
+        request.put("email", email);
         return post("/user", request, AuthData.class, null);
     }
 
     public AuthData login(String username, String password) throws Exception {
-        var request = new LoginRequest(username, password);
+        var request = new java.util.HashMap<String, Object>();
+        request.put("username", username);
+        request.put("password", password);
         return post("/session", request, AuthData.class, null);
     }
 
@@ -37,19 +42,22 @@ public class ServerFacade {
 
     public List<GameData> listGames(String authToken) throws Exception {
         ListResult response = get(ListResult.class, authToken);
-        if (response == null){
+        if (response == null || response.getGames() == null) {
             return Collections.emptyList();
         }
-        return (List<GameData>) response.games();
+        return response.getGames();
     }
 
     public GameData createGame(String authToken, String gameName) throws Exception {
-        var request = new CreateRequest(authToken, gameName);
+        var request = new java.util.HashMap<String, Object>();
+        request.put("gameName", gameName);
         return post("/game", request, GameData.class, authToken);
     }
 
     public GameData joinGame(String authToken, String gameID, String color) throws Exception {
-        var request = new JoinRequest(authToken, color, gameID);
+        var request = new java.util.HashMap<String, Object>();
+        request.put("playerColor", color);
+        request.put("gameID", gameID);
         return put(request, GameData.class, authToken);
     }
 
@@ -163,6 +171,13 @@ public class ServerFacade {
             return gson.fromJson(response.body(), responseType);
         } catch (java.lang.Exception e) {
             throw new Exception(e.getMessage());
+        }
+    }
+    public class ListResult {
+        private List<GameData> games;
+
+        public List<GameData> getGames() {
+            return games;
         }
     }
 }
