@@ -3,7 +3,6 @@ package ui;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
-import service.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;
