@@ -85,7 +85,7 @@ public class Renderer {
                     pieceStr = empty;
                 }
                 else{
-                    pieceStr = pieceToStringWhite(piece);
+                    pieceStr = pieceToStringBlack(piece);
                 }
                 System.out.print(empty + pieceStr + empty);
             }

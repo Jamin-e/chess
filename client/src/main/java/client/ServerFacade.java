@@ -3,7 +3,6 @@ package client;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
-import server.*;
 import dataaccess.*;
 import service.*;
 
@@ -38,7 +37,7 @@ public class ServerFacade {
     }
 
     public List<GameData> listGames(String authToken) throws DataAccessException {
-        ListResult response = get("/game", ListResult.class, authToken);
+        ListResult response = get(ListResult.class, authToken);
         if (response == null){
             return Collections.emptyList();
         }
@@ -52,7 +51,7 @@ public class ServerFacade {
 
     public GameData joinGame(String authToken, String gameID, String color) throws DataAccessException {
         var request = new JoinRequest(authToken, color, gameID);
-        return put("/game", request, GameData.class, authToken);
+        return put(request, GameData.class, authToken);
     }
 
 
@@ -84,10 +83,10 @@ public class ServerFacade {
         }
     }
 
-    private <R> R get(String path, Class<R> responseType, String authToken) throws DataAccessException {
+    private <R> R get(Class<R> responseType, String authToken) throws DataAccessException {
         try {
             var builder = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + path))
+                    .uri(URI.create(baseUrl + "/game"))
                     .GET();
 
             if (authToken != null) {
@@ -110,12 +109,12 @@ public class ServerFacade {
         }
     }
 
-    private <T, R> R put(String path, T requestBody, Class<R> responseType, String authToken) throws DataAccessException {
+    private <T, R> R put(T requestBody, Class<R> responseType, String authToken) throws DataAccessException {
         try {
             String json = gson.toJson(requestBody);
 
             var builder = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + path))
+                    .uri(URI.create(baseUrl + "/game"))
                     .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .header("Content-Type", "application/json");
 
