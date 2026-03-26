@@ -1,9 +1,9 @@
 package client;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
-import server.Server;
 
 import java.util.List;
 import java.util.Scanner;
@@ -37,7 +37,7 @@ public class ClientApp {
         if (state == State.PRELOGIN) {
             System.out.print("[PRELOGIN] >>> ");
         } else {
-            System.out.print("[POSTLOGIN] >>>");
+            System.out.print("[POSTLOGIN] >>> ");
         }
     }
 
@@ -69,12 +69,8 @@ public class ClientApp {
                 System.out.println("Quitting now");
                 return false;
             }
-            case "login" -> {
-                handleLogin(tokens);
-            }
-            case "register" -> {
-                handleRegister(tokens);
-            }
+            case "login" -> {handleLogin(tokens);}
+            case "register" -> {handleRegister(tokens);}
             default -> System.out.println("Unknown command. Type 'help' for list of commands");
         }
         return true;
@@ -83,9 +79,7 @@ public class ClientApp {
     private boolean handlePostlogin(String cmd, String[] tokens) {
         switch (cmd) {
             case "help" -> printPostLoginHelp();
-            case "logout" -> {
-                handleLogout(tokens);
-            }
+            case "logout" -> {handleLogout(tokens);}
             case "create" -> {
                 handleCreate(tokens);
             }
@@ -124,7 +118,7 @@ public class ClientApp {
             System.out.println("Usage: login <username> <password>");
         } else {
             try {
-                facade.login(args[1], args[2]);
+                authData = facade.login(args[1], args[2]);
                 state = State.POSTLOGIN;
             } catch (DataAccessException e) {
                 System.out.println(e.getMessage());
@@ -201,7 +195,8 @@ public class ClientApp {
         }
         else {
             try {
-                facade.joinGame(authData.authToken(), args[1], args[2]);
+                GameData game = facade.joinGame(authData.authToken(), args[1], args[2]);
+                Renderer.drawBoard(game.game(),args[2]);
             } catch (DataAccessException e) {
                 System.out.println(e.getMessage());
             }
@@ -209,17 +204,20 @@ public class ClientApp {
     }
 
     private void handleObserve(String[] args) {
+        int num = Integer.parseInt(args[1]);
         if (args.length != 2) {
             System.out.println("Usage: observe <indexFromList>");
         } else if (authData == null){
             System.out.println("You must login first");
+        } else if (num < 0 || num >= games.size()){
+            System.out.println("Invalid game index");
         }
         else {
             try {
-                int num = Integer.parseInt(args[1]);
                 GameData game = games.get(num);
+                Renderer.drawBoard(game.game(),"WHITE");
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }

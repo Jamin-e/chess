@@ -6,11 +6,13 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import ui.EscapeSequences;
 
-public class renderer {
+import java.util.Objects;
 
-    public static void drawBoard(ChessGame game, ChessGame.TeamColor perspective){
+public class Renderer {
+
+    public static void drawBoard(ChessGame game, String perspective){
         ChessBoard board = game.getBoard();
-        if(perspective == ChessGame.TeamColor.WHITE){
+        if(Objects.equals(perspective, "WHITE")){
             drawWhite(board);
         }else{
             drawBlack(board);

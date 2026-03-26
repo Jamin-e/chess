@@ -50,9 +50,9 @@ public class ServerFacade {
         return post("/game", request, GameData.class, authToken);
     }
 
-    public void joinGame(String authToken, String gameID, String color) throws DataAccessException {
+    public GameData joinGame(String authToken, String gameID, String color) throws DataAccessException {
         var request = new JoinRequest(authToken, color, gameID);
-        put("/game", request, Void.class, authToken);
+        return put("/game", request, GameData.class, authToken);
     }
 
 
