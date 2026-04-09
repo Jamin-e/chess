@@ -1,15 +1,21 @@
 package ui;
 
+import chess.ChessGame;
+
 public class GameplayView {
-    public void drawBoard(Object game, boolean whatAtBottom){
-        //tbi
+    public void drawBoard(ChessGame game, boolean whiteAtBottom){
+        if(whiteAtBottom) {
+            Renderer.drawBoard(game, "WHITE");
+        } else{
+            Renderer.drawBoard(game, "BLACK");
+        }
     }
 
     public void showHelp(){
-        //tbi
+        //print command help
     }
 
     public void showNotification(String text){
-        //tbi
+        System.out.println(text);
     }
 }

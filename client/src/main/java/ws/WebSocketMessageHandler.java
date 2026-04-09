@@ -12,14 +12,14 @@ public class WebSocketMessageHandler {
     }
 
     private void handleLoadGame(ServerMessage message){
-        //tbi
+        //update local board state and redraw
     }
 
     private void handleError(ServerMessage message){
-        //tbi
+        //show error to root client only
     }
 
     private void handleNotification(ServerMessage message){
-        //tbi
+        //show notification
     }
 }

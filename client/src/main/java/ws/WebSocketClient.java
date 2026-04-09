@@ -4,14 +4,16 @@ import websocket.commands.UserGameCommand;
 
 public class WebSocketClient {
     public void connect(String authToken, Integer gameID, boolean isPlayer){
-        //tbi
+        //open ws connection
+        //send CONNECT command
+        //transition to gameplay UI
     }
 
     public void sendCommand(UserGameCommand command){
-        //tbi
+        //serialize and send
     }
 
     public void closeConnection(){
-        //tbi
+        //close connection
     }
 }

@@ -4,14 +4,15 @@ public class WebSocketHandler {
     private final GameMessageRouter router = new GameMessageRouter();
 
     public void onOpen(){
-        //tbi
+        //initialize if needed
     }
 
     public void onMessage(String rawJSON){
-        //tbi
+        //deserialize to UserGameCommand
+        //route command
     }
 
     public void OnClose(){
-        //tbi
+        //cleanup socket from connection manager
     }
 }

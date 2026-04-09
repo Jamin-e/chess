@@ -4,18 +4,21 @@ import websocket.commands.UserGameCommand;
 
 public class GameService {
     public void handleConnect(UserGameCommand command){
-        //tbi
+        //validate token and gameID
+        //register socket
+        //send LOAD_GAME
+        //notify others
     }
 
     public void handleMakeMove(UserGameCommand command){
-        //tbi
+        //validate, verify move, update DB, broadcast
     }
 
     public void handleLeave(UserGameCommand command){
-        //tbi
+        //remove player/observer, broadcast notification
     }
 
     public void handleResign(UserGameCommand command){
-        //tbi
+        //mark game over, broadcast resignation
     }
 }
