@@ -10,6 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class ServerFacade {
     private final String baseUrl;
@@ -64,7 +65,7 @@ public class ServerFacade {
     public void clear(){
         try{delete("/db", Void.class, null);}
         catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println(extractMessage(e.getMessage()));
         }
     }
 
@@ -81,14 +82,14 @@ public class ServerFacade {
             var httpRequest = builder.build();
             var response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() / 100 != 2) {
-                throw new Exception("Error:" + response.statusCode() + " " + response.body());
+                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
             }
             if (responseType == Void.class) {
                 return null;
             }
             return gson.fromJson(response.body(), responseType);
         } catch (java.lang.Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(extractMessage(e.getMessage()));
         }
     }
 
@@ -106,7 +107,7 @@ public class ServerFacade {
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() / 100 != 2) {
-                throw new Exception("Error:" + response.statusCode() + " " + response.body());
+                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
             }
 
             if (responseType == Void.class) {
@@ -114,7 +115,7 @@ public class ServerFacade {
             }
             return gson.fromJson(response.body(), responseType);
         } catch (java.lang.Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(extractMessage(e.getMessage()));
         }
     }
 
@@ -135,7 +136,7 @@ public class ServerFacade {
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() / 100 != 2) {
-                throw new Exception("Error:" + response.statusCode() + " " + response.body());
+                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
             }
 
             if (responseType == Void.class) {
@@ -143,7 +144,7 @@ public class ServerFacade {
             }
             return gson.fromJson(response.body(), responseType);
         } catch (java.lang.Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(extractMessage(e.getMessage()));
         }
     }
 
@@ -161,7 +162,7 @@ public class ServerFacade {
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() / 100 != 2) {
-                throw new Exception("Error:" + response.statusCode() + " " + response.body());
+                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
             }
 
             if (responseType == Void.class) {
@@ -169,7 +170,7 @@ public class ServerFacade {
             }
             return gson.fromJson(response.body(), responseType);
         } catch (java.lang.Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(extractMessage(e.getMessage()));
         }
     }
     public static class ListResult {
@@ -177,6 +178,15 @@ public class ServerFacade {
 
         public List<GameData> getGames() {
             return games;
+        }
+    }
+
+    private String extractMessage(String json) {
+        try {
+            Map<?, ?> map = new Gson().fromJson(json, Map.class);
+            return map.get("message").toString();
+        } catch (Exception e) {
+            return json;
         }
     }
 }

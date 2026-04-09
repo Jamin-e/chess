@@ -84,7 +84,7 @@ public class ClientApp {
             case "list" -> {
                 handleList(tokens);
             }
-            case "play" -> {
+            case "join" -> {
                 handlePlay(tokens);
             }
             case "observe" -> {
@@ -108,7 +108,7 @@ public class ClientApp {
         System.out.println("logout - end user session");
         System.out.println("create - create a new game session");
         System.out.println("list - list games already created");
-        System.out.println("play - join game");
+        System.out.println("join - join game");
         System.out.println("observe - watch a game already in play");
     }
 
@@ -212,14 +212,15 @@ public class ClientApp {
                 facade.joinGame(authData.authToken(), selected.gameID(), color);
 
                 Renderer.drawBoard(selected.game(), color);
-            } catch (Exception e) {
+            }catch (NumberFormatException e){System.out.println("The index must be an integer");}
+            catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
     }
 
     private void handleObserve(String[] args) {
-        int num = Integer.parseInt(args[1]);
+        try{int num = Integer.parseInt(args[1]);
         if (args.length != 2) {
             System.out.println("Usage: observe <indexFromList>");
         } else if (authData == null){
@@ -228,13 +229,13 @@ public class ClientApp {
             System.out.println("Invalid game index");
         }
         else {
-            try {
-                GameData game = games.get(num);
-                Renderer.drawBoard(game.game(),"WHITE");
-            } catch (Exception e) {
+            GameData game = games.get(num);
+            Renderer.drawBoard(game.game(), "WHITE");
+            }
+        }catch (NumberFormatException e){System.out.println("The index must be an integer");}
+            catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-        }
     }
 }
 

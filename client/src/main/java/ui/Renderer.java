@@ -48,11 +48,15 @@ public class Renderer {
 
     private static void drawWhite(ChessBoard board){
         String empty = EscapeSequences.EMPTY;
-        String empty3 = empty + empty + empty;
-        System.out.println(empty3 + "a" + empty3 + "b" + empty3 + "c" + empty3 + "d" + empty3 + "e" + empty3 + "f" + empty3 + "g" + empty3 + "h");
+        System.out.print("   ");
+        for (char c = 'a'; c <= 'h'; c++) {
+            System.out.print("  " + c + "   ");
+        }
+        System.out.println();
         for(int row = 8; row >= 1; row--){
             System.out.print(" " + row + " ");
             for (int col = 1; col <= 8; col++){
+                boolean isWhiteSquare = (row + col) % 2 == 0;
                 var pos = new ChessPosition(row,col);
                 ChessPiece piece = board.getPiece(pos);
                 String pieceStr;
@@ -62,21 +66,25 @@ public class Renderer {
                 else{
                     pieceStr = pieceToStringWhite(piece);
                 }
-
-                System.out.print(empty + pieceStr + empty);
+                String bg = isWhiteSquare ? EscapeSequences.SET_BG_COLOR_LIGHT_GREY
+                        : EscapeSequences.SET_BG_COLOR_BLACK;
+                System.out.print(bg + " " + pieceStr + " " + EscapeSequences.RESET_BG_COLOR);
             }
-            System.out.println();
             System.out.println();
         }
     }
 
     private static void drawBlack(ChessBoard board) {
         String empty = EscapeSequences.EMPTY;
-        String empty3 = empty + empty + empty;
-        System.out.println(empty + "  h" + empty3 + "g" + empty3 + "f" + empty3 + "e" + empty3 + "d" + empty3 + "c" + empty3 + "b" + empty3 + "a");
+        System.out.print("   ");
+        for (char c = 'h'; c >= 'a'; c--) {
+            System.out.print("  " + c + "   ");
+        }
+        System.out.println();
         for (int row = 1; row <= 8; row++) {
             System.out.print(" " + row + " ");
             for (int col = 8; col >= 1; col--) {
+                boolean isWhiteSquare = (row + col) % 2 == 0;
                 var pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
                 String pieceStr;
@@ -86,9 +94,10 @@ public class Renderer {
                 else{
                     pieceStr = pieceToStringBlack(piece);
                 }
-                System.out.print(empty + pieceStr + empty);
+                String bg = isWhiteSquare ? EscapeSequences.SET_BG_COLOR_LIGHT_GREY
+                        : EscapeSequences.SET_BG_COLOR_BLACK;
+                System.out.print(bg + " " + pieceStr + " " + EscapeSequences.RESET_BG_COLOR);
             }
-            System.out.println();
             System.out.println();
         }
     }
