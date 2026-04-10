@@ -18,4 +18,12 @@ public class GameplayView {
     public void showNotification(String text){
         System.out.println(text);
     }
+
+    public void showError(String text){
+        System.out.println(text);
+    }
+
+    public void redrawCurrentBoard(){
+
+    }
 }
