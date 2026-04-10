@@ -1,6 +1,10 @@
 package ws;
 
+import com.google.gson.Gson;
+import websocket.commands.UserGameCommand;
+
 public class WebSocketHandler {
+    private final Gson gson = new Gson();
     private final GameMessageRouter router = new GameMessageRouter();
 
     public void onOpen(){
@@ -8,8 +12,8 @@ public class WebSocketHandler {
     }
 
     public void onMessage(String rawJSON){
-        //deserialize to UserGameCommand
-        //route command
+        UserGameCommand command = gson.fromJson(rawJSON, UserGameCommand.class);
+        router.route(command);
     }
 
     public void OnClose(){
