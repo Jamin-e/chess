@@ -19,6 +19,6 @@ public class GameService {
     }
 
     public void handleResign(UserGameCommand command){
-        //mark game over, broadcast resignation
+        //mark game over, broadcast ewsigna
     }
 }
