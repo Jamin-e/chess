@@ -1,5 +1,8 @@
 package ws;
 
+import websocket.LoadGameMessage;
+import websocket.messages.ServerMessage;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,16 +16,31 @@ public class GameConnectionManager {
     }
 
     public void removeConnection(Integer gameID, Object session){
-        if (gameConnections.containsKey(gameID)){
-            gameConnections.get(gameID).remove(session);
+        Set <Object> sessions = gameConnections.get(gameID);
+        if(sessions == null){
+            return;
+        }
+        sessions.remove(session);
+        if (sessions.isEmpty()){
+            gameConnections.remove(gameID);
         }
     }
 
-    public void broadcastToGame(Integer session, Object message){
-        //send to all sessions
+    public void broadcastToGame(Integer gameID, ServerMessage message){
+        Set <Object> sessions = gameConnections.get(gameID);
+        if (sessions == null){
+            return;
+        }
+        for(Object session : sessions){
+            send(session, message);
+        }
     }
 
     public void broadcastToRoot(Object session, Object message){
-        //send only to root client
+        send(session, message);
+    }
+
+    public void send(Object session, ServerMessage message){
+        // serialize message and send via websocket session
     }
 }

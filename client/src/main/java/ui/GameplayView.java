@@ -1,6 +1,10 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+
+import java.util.Collection;
 
 public class GameplayView {
     private ChessGame currentGame;
@@ -50,7 +54,9 @@ public class GameplayView {
         System.out.println(text);
     }
 
-    public void redrawCurrentBoard(){
-
+    public void highlightLegalMoves(ChessPosition position) {
+        if (currentGame == null) return;
+        Collection<ChessMove> moves = currentGame.validMoves(position);
+        // redraw board with highlighted squares
     }
 }
