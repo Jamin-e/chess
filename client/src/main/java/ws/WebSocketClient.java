@@ -22,10 +22,9 @@ public class WebSocketClient {
     public void connect(String authToken, Integer gameID, boolean isPlayer){
         this.authToken = authToken;
         this.gameID = gameID;
-        // 1. Open websocket connection to /ws
-        // 2. When open, send CONNECT command
-        // 3. Set connected = true
-        // 4. Transition to gameplay UI after LOAD_GAME arrives
+        UserGameCommand connectCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        sendCommand(connectCommand);
+        connected = true;
     }
 
     public void sendCommand(UserGameCommand command){
@@ -37,11 +36,21 @@ public class WebSocketClient {
     }
 
     public void closeConnection(){
-        //close connection
+        UserGameCommand disconnectCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
         connected = false;
     }
     private void handleIncoming(String rawJSON){
         ServerMessage message = gson.fromJson(rawJSON, ServerMessage.class);
         messageHandler.handle(message);
+    }
+
+    private void onOpen() {
+        connected = true;
+    }
+    private void onClose() {
+        connected = false;
+    }
+    private void onError(Exception e) {
+        // surface or log websocket errors
     }
 }

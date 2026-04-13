@@ -3,16 +3,43 @@ package ui;
 import chess.ChessGame;
 
 public class GameplayView {
-    public void drawBoard(ChessGame game, boolean whiteAtBottom){
+    private ChessGame currentGame;
+    private boolean whiteAtBottom;
+
+    public void setGame(ChessGame game){
+        this.currentGame = game;
+    }
+
+    public void setWhiteAtBottom(boolean whiteAtBottom){
+        this.whiteAtBottom = whiteAtBottom;
+    }
+
+    public void drawBoard(){
+        if (currentGame == null){
+            System.out.println("No game loaded");
+            return;
+        }
         if(whiteAtBottom) {
-            Renderer.drawBoard(game, "WHITE");
+            Renderer.drawBoard(currentGame, "WHITE");
         } else{
-            Renderer.drawBoard(game, "BLACK");
+            Renderer.drawBoard(currentGame, "BLACK");
         }
     }
 
+    public void drawBoard(ChessGame game, boolean whiteAtBottom) {
+        this.currentGame = game;
+        this.whiteAtBottom = whiteAtBottom;
+        drawBoard();
+    }
+
     public void showHelp(){
-        //print command help
+        System.out.println("Commands:");
+        System.out.println("help - display this help text");
+        System.out.println("redraw - redraw the board");
+        System.out.println("leave - leave the game");
+        System.out.println("move - make a move");
+        System.out.println("resign - resign the game");
+        System.out.println("highlight - highlight legal moves for a piece");
     }
 
     public void showNotification(String text){
