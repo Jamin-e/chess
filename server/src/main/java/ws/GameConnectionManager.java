@@ -36,7 +36,19 @@ public class GameConnectionManager {
         }
     }
 
-    public void broadcastToRoot(Object session, Object message){
+    public void broadcastToOthers(Integer gameID, Object excludeSession, ServerMessage message){
+        Set<Object> sessions = gameConnections.get(gameID);
+        if (sessions == null){
+            return;
+        }
+        for (Object session: sessions){
+            if(!session.equals(excludeSession)){
+                send(message,message);
+            }
+        }
+    }
+
+    public void broadcastToRoot(Object session, ServerMessage message){
         send(session, message);
     }
 

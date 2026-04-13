@@ -3,6 +3,8 @@ package ws;
 import websocket.commands.UserGameCommand;
 
 public class GameService {
+    private final GameConnectionManager connectionManager = new GameConnectionManager();
+
     public void handleConnect(UserGameCommand command){
         //validate token and gameID
         //register socket

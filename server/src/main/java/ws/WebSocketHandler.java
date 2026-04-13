@@ -17,8 +17,8 @@ public class WebSocketHandler {
         router.route(command);
     }
 
-    public void OnClose(Object session){
-        connectionManager.removeSession(session);
+    public void OnClose(Integer gameID, Object session){
+        connectionManager.removeConnection(gameID, session);
     }
 
     public void onError(Object session, Throwable error) {
