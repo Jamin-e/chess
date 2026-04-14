@@ -1,7 +1,9 @@
 package ws;
 
+import com.google.gson.Gson;
 import websocket.LoadGameMessage;
 import websocket.messages.ServerMessage;
+import jakarta.websocket.Session;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,14 +11,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class GameConnectionManager {
-    private final Map<Integer, Set<Object>> gameConnections = new HashMap<>();
+    private final Map<Integer, Set<Session>> gameConnections = new HashMap<>();
+    private final Gson gson = new Gson();
 
-    public void addConnection(Integer gameID, Object session){
+    public void addConnection(Integer gameID, Session session){
         gameConnections.computeIfAbsent(gameID, k -> new HashSet<>()).add(session);
     }
 
-    public void removeConnection(Integer gameID, Object session){
-        Set <Object> sessions = gameConnections.get(gameID);
+    public void removeConnection(Integer gameID, Session session){
+        Set <Session> sessions = gameConnections.get(gameID);
         if(sessions == null){
             return;
         }
@@ -27,32 +30,32 @@ public class GameConnectionManager {
     }
 
     public void broadcastToGame(Integer gameID, ServerMessage message){
-        Set <Object> sessions = gameConnections.get(gameID);
+        Set <Session> sessions = gameConnections.get(gameID);
         if (sessions == null){
             return;
         }
-        for(Object session : sessions){
+        for(Session session : sessions){
             send(session, message);
         }
     }
 
-    public void broadcastToOthers(Integer gameID, Object excludeSession, ServerMessage message){
-        Set<Object> sessions = gameConnections.get(gameID);
+    public void broadcastToOthers(Integer gameID, Session excludeSession, ServerMessage message){
+        Set<Session> sessions = gameConnections.get(gameID);
         if (sessions == null){
             return;
         }
-        for (Object session: sessions){
+        for (Session session: sessions){
             if(!session.equals(excludeSession)){
-                send(message,message);
+                send(session,message);
             }
         }
     }
 
-    public void broadcastToRoot(Object session, ServerMessage message){
+    public void broadcastToRoot(Session session, ServerMessage message){
         send(session, message);
     }
 
-    public void send(Object session, ServerMessage message){
-        // serialize message and send via websocket session
+    public void send(Session session, ServerMessage message){
+        session.getBasicRemote().sendText(gson.toJson(message));
     }
 }

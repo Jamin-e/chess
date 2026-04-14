@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
@@ -12,13 +13,53 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import ws.WebSocketClient;
+import ws.WebSocketHandler;
+import ws.WebSocketMessageHandler;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
+
 public class ServerFacade {
     private final String baseUrl;
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
+    private WebSocketClient webSocketClient;
+    private WebSocketMessageHandler wsHandler;
+
     public ServerFacade(int port) {
         this.baseUrl = "http://localhost:" + port;
+    }
+
+    public void setWebSocketHandler(WebSocketMessageHandler handler){
+        this.wsHandler = handler;
+        this.webSocketClient = new WebSocketClient(handler);
+    }
+
+    public void connectGame(String authToken, int gameID){
+        if (webSocketClient == null){
+            throw new IllegalStateException("Websocket handler not set");
+        }
+        webSocketClient.connect(baseUrl, authToken, gameID);
+    }
+
+    public void sendMove(String authToken, int gameID, ChessMove move){
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID);
+        command.move = move;
+        webSocketClient.sendCommand(command);
+    }
+
+    public void leaveGame(String authToken, int gameID){
+        webSocketClient.sendCommand(new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID));
+        webSocketClient.closeConnection();
+    }
+
+    public void resignGame(String authToken, int gameID) {
+        webSocketClient.sendCommand(new UserGameCommand(
+                UserGameCommand.CommandType.RESIGN,
+                authToken,
+                gameID
+        ));
     }
 
     public AuthData register(String username, String password, String email) throws Exception {

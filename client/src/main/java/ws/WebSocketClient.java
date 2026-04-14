@@ -86,6 +86,10 @@ public class WebSocketClient {
         messageHandler.handle(message);
     }
 
+    public boolean isConnected() {
+        return connected;
+    }
+
     private void onOpen() {
         connected = true;
     }
