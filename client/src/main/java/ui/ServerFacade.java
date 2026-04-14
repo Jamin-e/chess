@@ -36,11 +36,11 @@ public class ServerFacade {
         this.webSocketClient = new WebSocketClient(handler);
     }
 
-    public void connectGame(String authToken, int gameID){
+    public void connectGame(String authToken, int gameID, boolean isPlayer){
         if (webSocketClient == null){
             throw new IllegalStateException("Websocket handler not set");
         }
-        webSocketClient.connect(baseUrl, authToken, gameID);
+        webSocketClient.connect(baseUrl, authToken, gameID, isPlayer);
     }
 
     public void sendMove(String authToken, int gameID, ChessMove move){

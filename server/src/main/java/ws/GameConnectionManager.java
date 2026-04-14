@@ -5,6 +5,7 @@ import websocket.LoadGameMessage;
 import websocket.messages.ServerMessage;
 import jakarta.websocket.Session;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class GameConnectionManager {
         }
     }
 
-    public void broadcastToGame(Integer gameID, ServerMessage message){
+    public void broadcastToGame(Integer gameID, ServerMessage message) throws IOException {
         Set <Session> sessions = gameConnections.get(gameID);
         if (sessions == null){
             return;
@@ -39,7 +40,7 @@ public class GameConnectionManager {
         }
     }
 
-    public void broadcastToOthers(Integer gameID, Session excludeSession, ServerMessage message){
+    public void broadcastToOthers(Integer gameID, Session excludeSession, ServerMessage message) throws IOException {
         Set<Session> sessions = gameConnections.get(gameID);
         if (sessions == null){
             return;
@@ -51,11 +52,11 @@ public class GameConnectionManager {
         }
     }
 
-    public void broadcastToRoot(Session session, ServerMessage message){
+    public void broadcastToRoot(Session session, ServerMessage message) throws IOException {
         send(session, message);
     }
 
-    public void send(Session session, ServerMessage message){
+    public void send(Session session, ServerMessage message) throws IOException {
         session.getBasicRemote().sendText(gson.toJson(message));
     }
 }
