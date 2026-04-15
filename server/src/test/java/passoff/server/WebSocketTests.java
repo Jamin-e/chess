@@ -2,7 +2,6 @@ package passoff.server;
 
 import chess.*;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.TestFactory;
 import passoff.model.*;
 import passoff.websocket.*;
 import server.Server;
@@ -33,6 +32,7 @@ public class WebSocketTests {
 
     @BeforeAll
     public static void init() throws URISyntaxException {
+        passoff.server.TestFactory factory = new passoff.server.TestFactory();
         server = new Server();
         var port = Integer.toString(server.run(0));
         System.out.println("Started test HTTP server on " + port);

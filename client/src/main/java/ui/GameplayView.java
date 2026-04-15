@@ -3,14 +3,11 @@ package ui;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
-import jakarta.websocket.MessageHandler;
-import websocket.LoadGameMessage;
-import websocket.messages.ServerMessage;
+
 
 import java.util.Collection;
 import java.util.Scanner;
 
-import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 public class GameplayView {
     private ChessGame currentGame;
@@ -133,11 +130,11 @@ public class GameplayView {
         }
     }
 
-    public void drawBoard(ChessGame game, boolean whiteAtBottom) {
-        this.currentGame = game;
-        this.whiteAtBottom = whiteAtBottom;
-        drawBoard();
-    }
+//    public void drawBoard(ChessGame game, boolean whiteAtBottom) {
+//        this.currentGame = game;
+//        this.whiteAtBottom = whiteAtBottom;
+//        drawBoard();
+//    }
 
     public void showHelp(){
         System.out.println("Commands:");

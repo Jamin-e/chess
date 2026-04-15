@@ -1,7 +1,6 @@
 package ws;
 
 import chess.ChessGame;
-import chess.ChessMove;
 import chess.ChessPiece;
 import chess.InvalidMoveException;
 import dataaccess.DataAccess;
@@ -25,6 +24,7 @@ public class GameService {
         this.dataAccess = dataAccess;
         this.connections = connect;
     }
+
     private final ConcurrentHashMap<Integer, ChessGame> games = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, Object> locks = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, Boolean> gameOver = new ConcurrentHashMap<>();
@@ -34,11 +34,10 @@ public class GameService {
         try {
             String username = requireUser(command.getAuthToken());
             GameData gameData = requireGame(command.getGameID());
-
-            // join connection group only on successful validation
+            gameOver.remove(command.getGameID());
             connections.addConnection(command.getGameID(), ctx);
 
-            ChessGame game = games.computeIfAbsent(command.getGameID(), id -> gameData.game());
+            ChessGame game = gameData.game();
             connections.send(ctx, new LoadGameMessage(game));
 
             String role = roleFor(username, gameData);
@@ -48,7 +47,7 @@ public class GameService {
         }
     }
 
-    public void handleMakeMove(UserGameCommand command, WsContext ctx) throws Exception{
+    public void handleMakeMove(UserGameCommand command, WsContext ctx) throws Exception {
         try {
             int gameID = command.getGameID();
             String username = requireUser(command.getAuthToken());
@@ -68,7 +67,7 @@ public class GameService {
 
             Object lock = locks.computeIfAbsent(gameID, k -> new Object());
             synchronized (lock) {
-                ChessGame game = games.computeIfAbsent(gameID, id -> gameData.game());
+                ChessGame game = requireGame(gameID).game();
 
                 if (Boolean.TRUE.equals(gameOver.get(gameID))) {
                     throw new Exception("game is over");
@@ -109,23 +108,23 @@ public class GameService {
         }
     }
 
-    public void handleLeave(UserGameCommand command, WsContext ctx) throws Exception{
-            try {
-                int gameID = command.getGameID();
-                String username = requireUser(command.getAuthToken());
-                requireGame(gameID);
+    public void handleLeave(UserGameCommand command, WsContext ctx) throws Exception {
+        try {
+            int gameID = command.getGameID();
+            String username = requireUser(command.getAuthToken());
+            requireGame(gameID);
 
-                connections.removeConnection(gameID, ctx);
+            connections.removeConnection(gameID, ctx);
 
-                 dataAccess.leaveGame(gameID, username);
+            dataAccess.leaveGame(gameID, username);
 
-                connections.broadcastToOthers(gameID, ctx, new NotificationMessage(username + " left the game"));
-            } catch (Exception e) {
-                connections.send(ctx, new ErrorMessage("Error: " + e.getMessage()));
-            }
+            connections.broadcastToOthers(gameID, ctx, new NotificationMessage(username + " left the game"));
+        } catch (Exception e) {
+            connections.send(ctx, new ErrorMessage("Error: " + e.getMessage()));
         }
+    }
 
-    public void handleResign(UserGameCommand command, WsContext ctx) throws Exception{
+    public void handleResign(UserGameCommand command, WsContext ctx) throws Exception {
         try {
             int gameID = command.getGameID();
             String username = requireUser(command.getAuthToken());
@@ -172,53 +171,26 @@ public class GameService {
     }
 
     private ChessGame.TeamColor playerColorFor(String username, GameData gameData) {
-        if (username == null) { return null; }
-        if (username.equals(gameData.whiteUsername())) { return ChessGame.TeamColor.WHITE; }
-        if (username.equals(gameData.blackUsername())) { return ChessGame.TeamColor.BLACK; }
+        if (username == null) {
+            return null;
+        }
+        if (username.equals(gameData.whiteUsername())) {
+            return ChessGame.TeamColor.WHITE;
+        }
+        if (username.equals(gameData.blackUsername())) {
+            return ChessGame.TeamColor.BLACK;
+        }
         return null;
     }
 
     private String roleFor(String username, GameData gameData) {
         ChessGame.TeamColor color = playerColorFor(username, gameData);
-        if (color == ChessGame.TeamColor.WHITE) { return "WHITE"; }
-        if (color == ChessGame.TeamColor.BLACK) { return "BLACK"; }
+        if (color == ChessGame.TeamColor.WHITE) {
+            return "WHITE";
+        }
+        if (color == ChessGame.TeamColor.BLACK) {
+            return "BLACK";
+        }
         return "OBSERVER";
     }
-//
-//    public void sendError(Session session, String text) throws IOException {
-//        connectionManager.broadcastToRoot(session, new ErrorMessage(text));
-//    }
-//
-//    private String buildConnectMessage(User user, GameRecord gameRecord) {
-//        return user.getUserIdentity() + " joined as " + gameRecord.getRoleFor(user);
-//    }
-//
-//    private String buildMoveMessage(User user, ChessMove move) {
-//        return user.getUserIdentity() + " moved from " + move.getStartPosition() + " to " + move.getEndPosition();
-//    }
-//
-//    private String validateMove(GameRecord gameRecord, User user, ChessMove move) {
-//        return null;
-//    }
-//
-//    private void applyMove(GameRecord gameRecord, ChessMove move) {
-//    }
-//
-//    private boolean isCheck(GameRecord gameRecord) {
-//        return false;
-//    }
-//
-//    private boolean isCheckmate(GameRecord gameRecord) {
-//        return false;
-//    }
-//
-//    private boolean isStalemate(GameRecord gameRecord) {
-//        return false;
-//    }
-//
-//    private void removeUserFromGame(GameRecord gameRecord, User user) {
-//    }
-//
-//    private void markGameOver(GameRecord gameRecord) {
-//    }
 }

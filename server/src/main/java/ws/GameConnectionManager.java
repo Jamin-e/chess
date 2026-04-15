@@ -1,15 +1,11 @@
 package ws;
 
 import com.google.gson.Gson;
-import websocket.LoadGameMessage;
 import websocket.messages.ServerMessage;
-import jakarta.websocket.Session;
 import io.javalin.websocket.WsContext;
 import java.util.concurrent.ConcurrentHashMap;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +28,7 @@ public class GameConnectionManager {
         }
     }
 
-    public void broadcastToGame(Integer gameID, ServerMessage message) throws IOException {
+    public void broadcastToGame(Integer gameID, ServerMessage message){
         Set <WsContext> sessions = gameConnections.get(gameID);
         if (sessions == null){
             return;
@@ -43,14 +39,14 @@ public class GameConnectionManager {
         }
     }
 
-    public void broadcastToOthers(Integer gameID, WsContext exclude, ServerMessage message) throws IOException {
+    public void broadcastToOthers(Integer gameID, WsContext exclude, ServerMessage message){
         Set<WsContext> sessions = gameConnections.get(gameID);
         if (sessions == null){
             return;
         }
         String json = gson.toJson(message);
         for (WsContext ctx : sessions){
-            if (ctx != exclude) {
+            if (exclude == null || !ctx.equals(exclude)) {
                 ctx.send(json);
             }
         }
@@ -60,7 +56,7 @@ public class GameConnectionManager {
         send(ctx, message);
     }
 
-    public void send(WsContext ctx, ServerMessage message) throws IOException {
+    public void send(WsContext ctx, ServerMessage message){
         ctx.send(gson.toJson(message));
     }
 }

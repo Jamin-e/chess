@@ -16,7 +16,6 @@ import java.util.Map;
 import ws.WebSocketClient;
 import ws.WebSocketMessageHandler;
 import websocket.commands.UserGameCommand;
-import websocket.messages.ServerMessage;
 
 public class ServerFacade {
     private final String baseUrl;
@@ -24,14 +23,14 @@ public class ServerFacade {
     private final Gson gson = new Gson();
 
     private WebSocketClient webSocketClient;
-    private WebSocketMessageHandler wsHandler;
+//    private WebSocketMessageHandler wsHandler;
 
     public ServerFacade(int port) {
         this.baseUrl = "http://localhost:" + port;
     }
 
     public void setWebSocketHandler(WebSocketMessageHandler handler){
-        this.wsHandler = handler;
+//        this.wsHandler = handler;
         this.webSocketClient = new WebSocketClient(handler);
     }
 

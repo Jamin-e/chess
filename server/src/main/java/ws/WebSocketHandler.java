@@ -43,10 +43,5 @@ public class WebSocketHandler {
     }
 
     public void onConnect(WsConnectContext ctx){
-        UserGameCommand command = gson.fromJson(ctx.toString(), UserGameCommand.class);
-        Integer gameID = socketGame.put(ctx, command.getGameID());
-        if (gameID != null) {
-            connectionManager.addConnection(gameID, ctx);
-        }
     }
 }
