@@ -116,29 +116,18 @@ public class Renderer {
         return c;
     }
 
-    private static void drawWhite(ChessBoard board){
+
+    private static void drawWhite(ChessBoard board) {
         String empty = EscapeSequences.EMPTY;
         System.out.print("   ");
         for (char c = 'a'; c <= 'h'; c++) {
             System.out.print("  " + c + "   ");
         }
         System.out.println();
-        for(int row = 8; row >= 1; row--){
+        for (int row = 8; row >= 1; row--) {
             System.out.print(" " + row + " ");
-            for (int col = 1; col <= 8; col++){
-                boolean isWhiteSquare = (row + col) % 2 == 0;
-                var pos = new ChessPosition(row,col);
-                ChessPiece piece = board.getPiece(pos);
-                String pieceStr;
-                if(piece == null){
-                    pieceStr = empty;
-                }
-                else{
-                    pieceStr = pieceToString(piece);
-                }
-                String bg = isWhiteSquare ? EscapeSequences.SET_BG_COLOR_LIGHT_GREY
-                        : EscapeSequences.SET_BG_COLOR_BLACK;
-                System.out.print(bg + " " + pieceStr + " " + EscapeSequences.RESET_BG_COLOR);
+            for (int col = 1; col <= 8; col++) {
+                drawLoop(row, col, board);
             }
             System.out.println();
         }
@@ -154,21 +143,25 @@ public class Renderer {
         for (int row = 1; row <= 8; row++) {
             System.out.print(" " + row + " ");
             for (int col = 8; col >= 1; col--) {
-                boolean isWhiteSquare = (row + col) % 2 == 0;
-                var pos = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(pos);
-                String pieceStr;
-                if(piece == null){
-                    pieceStr = empty;
-                }
-                else{
-                    pieceStr = pieceToString(piece);
-                }
-                String bg = isWhiteSquare ? EscapeSequences.SET_BG_COLOR_LIGHT_GREY
-                        : EscapeSequences.SET_BG_COLOR_BLACK;
-                System.out.print(bg + " " + pieceStr + " " + EscapeSequences.RESET_BG_COLOR);
+                drawLoop(row,col,board);
             }
             System.out.println();
         }
     }
+    private static void drawLoop(int row, int col, ChessBoard board){
+        boolean isWhiteSquare = (row + col) % 2 == 0;
+        var pos = new ChessPosition(row,col);
+        ChessPiece piece = board.getPiece(pos);
+        String pieceStr;
+        if(piece == null){
+            pieceStr = EscapeSequences.EMPTY;
+        }
+        else{
+            pieceStr = pieceToString(piece);
+        }
+        String bg = isWhiteSquare ? EscapeSequences.SET_BG_COLOR_LIGHT_GREY
+                : EscapeSequences.SET_BG_COLOR_BLACK;
+        System.out.print(bg + " " + pieceStr + " " + EscapeSequences.RESET_BG_COLOR);
+    }
 }
+

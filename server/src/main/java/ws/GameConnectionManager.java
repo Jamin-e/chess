@@ -5,7 +5,6 @@ import websocket.messages.ServerMessage;
 import io.javalin.websocket.WsContext;
 import java.util.concurrent.ConcurrentHashMap;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,10 +49,6 @@ public class GameConnectionManager {
                 ctx.send(json);
             }
         }
-    }
-
-    public void broadcastToRoot(WsContext ctx, ServerMessage message) throws IOException {
-        send(ctx, message);
     }
 
     public void send(WsContext ctx, ServerMessage message){

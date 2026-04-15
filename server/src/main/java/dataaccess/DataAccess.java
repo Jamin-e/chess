@@ -12,7 +12,7 @@ public interface DataAccess {
 
     void updateGame(int gameID, ChessGame game) throws Exception;
 
-    void leaveGame(int gameID, String Username) throws Exception;
+    void leaveGame(int gameID, String username) throws Exception;
 
     //users
     UserData getUser(String username) throws Exception;

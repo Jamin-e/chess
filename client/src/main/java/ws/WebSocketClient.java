@@ -109,18 +109,4 @@ public class WebSocketClient {
             messageHandler.handle(new ErrorMessage("Wbsocket error: "+ e.getMessage()));
         }
     }
-
-//    public boolean isConnected() {
-//        return connected;
-//    }
-//
-//    private void onOpen() {
-//        connected = true;
-//    }
-//    private void onClose() {
-//        connected = false;
-//    }
-//    private void onError(Exception e) {
-//        // surface or log websocket errors
-//    }
 }

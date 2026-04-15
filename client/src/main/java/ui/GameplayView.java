@@ -130,11 +130,6 @@ public class GameplayView {
         }
     }
 
-//    public void drawBoard(ChessGame game, boolean whiteAtBottom) {
-//        this.currentGame = game;
-//        this.whiteAtBottom = whiteAtBottom;
-//        drawBoard();
-//    }
 
     public void showHelp(){
         System.out.println("Commands:");
@@ -164,7 +159,7 @@ public class GameplayView {
     }
 
     private ChessPosition parsePosition(String text){
-        if (text.length() !=2 ) return null;
+        if (text.length() !=2 ) {return null;}
         char file = Character.toLowerCase(text.charAt(0));
         char rank = text.charAt(1);
         int col = file - 'a' + 1;

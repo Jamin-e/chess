@@ -80,7 +80,7 @@ public class ServerFacade {
     }
 
     public List<GameData> listGames(String authToken) throws Exception {
-        ListResult response = get(ListResult.class, authToken);
+        ListResult response = get("/game", ListResult.class, authToken);
         if (response == null || response.getGames() == null) {
             return Collections.emptyList();
         }
@@ -97,7 +97,7 @@ public class ServerFacade {
         var request = new java.util.HashMap<String, Object>();
         request.put("playerColor", color);
         request.put("gameID", gameID);
-        put(request, GameData.class, authToken);
+        put("/game", request, Void.class, authToken);
     }
 
 
@@ -111,77 +111,35 @@ public class ServerFacade {
     private <T, R> R post(String path, T request, Class<R> responseType, String authToken) throws Exception {
         try {
             var body = gson.toJson(request);
-            var builder = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + path))
+            var builder = request(path, authToken)
+                    .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(body))
-                    .header("Content-Type", "application/json");
-            if (authToken != null) {
-                builder.header("Authorization", authToken);
-            }
-            var httpRequest = builder.build();
-            var response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() / 100 != 2) {
-                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
-            }
-            if (responseType == Void.class) {
-                return null;
-            }
-            return gson.fromJson(response.body(), responseType);
+                    .build();
+            return send(builder, responseType);
         } catch (java.lang.Exception e) {
             throw new Exception(extractMessage(e.getMessage()));
         }
     }
 
-    private <R> R get(Class<R> responseType, String authToken) throws Exception {
+    private <R> R get(String path, Class<R> responseType, String authToken) throws Exception {
         try {
-            var builder = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + "/game"))
-                    .GET();
+            var builder = request(path, authToken).GET().build();
 
-            if (authToken != null) {
-                builder.header("Authorization", authToken);
-            }
-
-            var request = builder.build();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() / 100 != 2) {
-                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
-            }
-
-            if (responseType == Void.class) {
-                return null;
-            }
-            return gson.fromJson(response.body(), responseType);
+            return send(builder, responseType);
         } catch (java.lang.Exception e) {
             throw new Exception(extractMessage(e.getMessage()));
         }
     }
 
-    private <T, R> R put(T requestBody, Class<R> responseType, String authToken) throws Exception {
+    private <T, R> R put(String path, T requestBody, Class<R> responseType, String authToken) throws Exception {
         try {
             String json = gson.toJson(requestBody);
-
-            var builder = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + "/game"))
+            var builder = request(path, authToken)
+                    .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(json))
-                    .header("Content-Type", "application/json");
+                    .build();
 
-            if (authToken != null) {
-                builder.header("Authorization", authToken);
-            }
-
-            var request = builder.build();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() / 100 != 2) {
-                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
-            }
-
-            if (responseType == Void.class) {
-                return null;
-            }
-            return gson.fromJson(response.body(), responseType);
+            return send(builder, responseType);
         } catch (java.lang.Exception e) {
             throw new Exception(extractMessage(e.getMessage()));
         }
@@ -189,25 +147,9 @@ public class ServerFacade {
 
     private <R> R delete(String path, Class<R> responseType, String authToken) throws Exception {
         try {
-            var builder = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + path))
-                    .DELETE();
+            var builder = request(path, authToken).DELETE().build();
 
-            if (authToken != null) {
-                builder.header("Authorization", authToken);
-            }
-
-            var request = builder.build();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() / 100 != 2) {
-                throw new Exception(response.statusCode() + " " + extractMessage(response.body()));
-            }
-
-            if (responseType == Void.class) {
-                return null;
-            }
-            return gson.fromJson(response.body(), responseType);
+            return send(builder,responseType);
         } catch (java.lang.Exception e) {
             throw new Exception(extractMessage(e.getMessage()));
         }
@@ -226,6 +168,26 @@ public class ServerFacade {
             return map.get("message").toString();
         } catch (Exception e) {
             return json;
+        }
+    }
+
+    private HttpRequest.Builder request(String path, String authToken) {
+        var b = HttpRequest.newBuilder().uri(URI.create(baseUrl + path));
+        if (authToken != null) b.header("Authorization", authToken);
+        return b;
+    }
+
+    private <R> R send(HttpRequest req, Class<R> responseType) throws Exception {
+        try {
+            var resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+
+            if (resp.statusCode() / 100 != 2) {
+                throw new Exception(resp.statusCode() + " " + extractMessage(resp.body()));
+            }
+            if (responseType == Void.class) return null;
+            return gson.fromJson(resp.body(), responseType);
+        } catch (Exception e) {
+            throw new Exception(extractMessage(e.getMessage()));
         }
     }
 }
