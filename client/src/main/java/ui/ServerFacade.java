@@ -173,7 +173,7 @@ public class ServerFacade {
 
     private HttpRequest.Builder request(String path, String authToken) {
         var b = HttpRequest.newBuilder().uri(URI.create(baseUrl + path));
-        if (authToken != null) b.header("Authorization", authToken);
+        if (authToken != null) {b.header("Authorization", authToken);}
         return b;
     }
 
@@ -184,7 +184,7 @@ public class ServerFacade {
             if (resp.statusCode() / 100 != 2) {
                 throw new Exception(resp.statusCode() + " " + extractMessage(resp.body()));
             }
-            if (responseType == Void.class) return null;
+            if (responseType == Void.class) {return null;}
             return gson.fromJson(resp.body(), responseType);
         } catch (Exception e) {
             throw new Exception(extractMessage(e.getMessage()));
