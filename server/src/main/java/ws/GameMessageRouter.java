@@ -1,16 +1,24 @@
 package ws;
 
+import io.javalin.websocket.WsContext;
 import websocket.commands.UserGameCommand;
 
 public class GameMessageRouter {
-    private final GameService gameService = new GameService();
+    private final GameService gameService;
 
-    public void route(UserGameCommand command){
+    public GameMessageRouter(GameService gameService){
+        this.gameService = gameService;
+    }
+
+    public void route(UserGameCommand command, WsContext ctx) throws Exception{
+        if(command == null || command.getCommandType() == null){
+            return;
+        }
         switch (command.getCommandType()){
-            case CONNECT -> gameService.handleConnect(command);
-            case MAKE_MOVE -> gameService.handleMakeMove(command);
-            case LEAVE -> gameService.handleLeave(command);
-            case RESIGN -> gameService.handleResign(command);
+            case CONNECT -> gameService.handleConnect(command, ctx);
+            case MAKE_MOVE -> gameService.handleMakeMove(command, ctx);
+            case LEAVE -> gameService.handleLeave(command, ctx);
+            case RESIGN -> gameService.handleResign(command, ctx);
         }
     }
 }

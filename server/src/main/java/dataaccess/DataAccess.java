@@ -3,11 +3,16 @@ import model.AuthData;
 import model.UserData;
 import model.GameData;
 import service.JoinResult;
+import chess.ChessGame;
 
 import java.util.Collection;
 
 public interface DataAccess {
     void clear() throws Exception;
+
+    void updateGame(int gameID, ChessGame game) throws Exception;
+
+    void leaveGame(int gameID, String Username) throws Exception;
 
     //users
     UserData getUser(String username) throws Exception;

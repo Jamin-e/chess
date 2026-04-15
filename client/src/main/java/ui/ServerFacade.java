@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import ws.WebSocketClient;
-import ws.WebSocketHandler;
 import ws.WebSocketMessageHandler;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
@@ -95,11 +94,11 @@ public class ServerFacade {
         return post("/game", request, GameData.class, authToken);
     }
 
-    public GameData joinGame(String authToken, int gameID, String color) throws Exception {
+    public void joinGame(String authToken, int gameID, String color) throws Exception {
         var request = new java.util.HashMap<String, Object>();
         request.put("playerColor", color);
         request.put("gameID", gameID);
-        return put(request, GameData.class, authToken);
+        put(request, GameData.class, authToken);
     }
 
 

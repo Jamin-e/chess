@@ -2,7 +2,9 @@ package ui;
 
 import model.AuthData;
 import model.GameData;
+import ws.WebSocketMessageHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,10 +16,31 @@ public class ClientApp {
     private State state = State.PRELOGIN;
     private final ServerFacade facade;
     private AuthData authData;
-    private List<GameData> games = List.of();
+    private List<GameData> games = new ArrayList<>();
+    GameplayView view;
+    WebSocketMessageHandler handler;
 
     public ClientApp(int port) {
         this.facade = new ServerFacade(port);
+    }
+
+    private void enterGameplay(model.GameData gameData, boolean whiteAtBottom, boolean isPlayer) {
+        if(authData == null){
+            System.out.println("you must login");
+            return;
+        }
+        this.view = new GameplayView(scanner);
+        view.setServerFacade(facade);
+        view.setAuthToken(authData.authToken());
+        view.setGameID(gameData.gameID());
+        view.setWhiteAtBottom(whiteAtBottom);
+        view.setGame(gameData.game());
+        view.drawBoard();
+        this.handler = new WebSocketMessageHandler(view);
+        facade.setWebSocketHandler(handler);
+        facade.connectGame(authData.authToken(), gameData.gameID(), isPlayer);
+        view.start();
+
     }
 
     public void run() {
@@ -84,7 +107,7 @@ public class ClientApp {
             case "list" -> {
                 handleList(tokens);
             }
-            case "join" -> {
+            case "play" -> {
                 handlePlay(tokens);
             }
             case "observe" -> {
@@ -211,7 +234,7 @@ public class ClientApp {
                 GameData selected = games.get(index);
                 facade.joinGame(authData.authToken(), selected.gameID(), color);
 
-                Renderer.drawBoard(selected.game(), color);
+                enterGameplay(selected, color.equals("WHITE"),true);
             }catch (NumberFormatException e){System.out.println("The index must be an integer");}
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -220,17 +243,19 @@ public class ClientApp {
     }
 
     private void handleObserve(String[] args) {
-        try{int num = Integer.parseInt(args[1]);
+        try{
         if (args.length != 2) {
             System.out.println("Usage: observe <indexFromList>");
         } else if (authData == null){
             System.out.println("You must login first");
-        } else if (num < 0 || num >= games.size()){
+        }
+        int num = Integer.parseInt(args[1]);
+        if (num < 0 || num >= games.size()){
             System.out.println("Invalid game index");
         }
         else {
             GameData game = games.get(num);
-            Renderer.drawBoard(game.game(), "WHITE");
+            facade.joinGame(authData.authToken(),game.gameID() ,null);
             }
         }catch (NumberFormatException e){System.out.println("The index must be an integer");}
             catch (Exception e) {

@@ -19,6 +19,11 @@ public class GameplayView {
     private String authToken;
     private int gameID;
     private boolean running = false;
+    Scanner scanner;
+
+    public GameplayView(Scanner scanner){
+        this.scanner = scanner;
+    }
 
     public void setServerFacade(ServerFacade serverFacade){
         this.serverFacade = serverFacade;
@@ -45,7 +50,6 @@ public class GameplayView {
         showHelp();
         drawBoard();
 
-        Scanner scanner = new Scanner(System.in);
         while(running){
             System.out.print("> ");
             String line = scanner.nextLine().trim();
@@ -86,7 +90,7 @@ public class GameplayView {
             return;
         }
         ChessMove move = new ChessMove(start,end,null);
-        serverFacade.makeMove(authToken,gameID,move);
+        serverFacade.sendMove(authToken,gameID,move);
     }
 
     public void handleHighlight(String[] parts){
@@ -109,7 +113,6 @@ public class GameplayView {
 
     public void handleResign(){
         System.out.print("resign? y/n");
-        Scanner scanner = new Scanner(System.in);
         String in = scanner.nextLine().trim().toLowerCase();
 
         if(in.equals("y") || in.equals("yes")){
@@ -117,14 +120,6 @@ public class GameplayView {
         }
     }
 
-    public void notify(ServerMessage message) {
-        case LOAD_GAME -> {
-            setGame(extractGame(message));
-            drawBoard();
-        case NOTIFICATION -> showNotification(message.message);
-        case ERROR -> showError(message.errorMessage);
-        }
-    }
 
     public void drawBoard(){
         if (currentGame == null){

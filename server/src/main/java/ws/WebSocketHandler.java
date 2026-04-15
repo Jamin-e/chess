@@ -1,33 +1,52 @@
 package ws;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccess;
+import io.javalin.websocket.*;
+
 import websocket.commands.UserGameCommand;
-import jakarta.websocket.*;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WebSocketHandler {
     private final Gson gson = new Gson();
-    private final GameMessageRouter router = new GameMessageRouter();
+    private final GameMessageRouter router;
     private final GameConnectionManager connectionManager = new GameConnectionManager();
+    private final GameService service;
 
-    public void onOpen(Integer ID, Session session, EndpointConfig config){
-        connectionManager.addConnection(ID, session);
+    private final ConcurrentHashMap<WsContext, Integer> socketGame = new ConcurrentHashMap<>();
 
-        session.addMessageHandler((MessageHandler.Whole<String>) rawJson -> {
-            UserGameCommand command = gson.fromJson(rawJson, UserGameCommand.class);
-            router.route(command);
-        });
+    public WebSocketHandler(DataAccess dataAccess){
+        this.service = new GameService(dataAccess, connectionManager);
+        this.router = new GameMessageRouter(service);
     }
 
-    public void onMessage(String rawJSON){
-        UserGameCommand command = gson.fromJson(rawJSON, UserGameCommand.class);
-        router.route(command);
+
+    public void onMessage(WsMessageContext ctx) throws Exception{
+        UserGameCommand command = gson.fromJson(ctx.message(), UserGameCommand.class);
+        if (command != null && command.getCommandType() == UserGameCommand.CommandType.CONNECT && command.getGameID() != null) {
+            socketGame.put(ctx, command.getGameID());
+        }
+
+        router.route(command, ctx);
     }
 
-    public void OnClose(Integer gameID, Session session){
-        connectionManager.removeConnection(gameID, session);
+    public void onClose(WsCloseContext ctx) {
+        Integer gameID = socketGame.remove(ctx);
+        if (gameID != null) {
+            connectionManager.removeConnection(gameID, ctx);
+        }
     }
 
-    public void onError(Object session, Throwable error) {
-        // log or print error
+    public void onError(WsErrorContext ctx) {
+        System.out.println(ctx.toString());
+    }
+
+    public void onConnect(WsConnectContext ctx){
+        UserGameCommand command = gson.fromJson(ctx.toString(), UserGameCommand.class);
+        Integer gameID = socketGame.put(ctx, command.getGameID());
+        if (gameID != null) {
+            connectionManager.addConnection(gameID, ctx);
+        }
     }
 }

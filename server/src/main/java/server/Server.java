@@ -2,6 +2,7 @@ package server;
 import dataaccess.*;
 import dataaccess.Exception;
 import service.UserService;
+import ws.WebSocketHandler;
 
 import io.javalin.*;
 
@@ -23,6 +24,15 @@ public class Server {
         javalin.post("/game", new CreateHandler(userService).create);
         javalin.put("/game", new JoinHandler(userService).join);
         javalin.delete("/db", new ClearHandler(userService).clear);
+
+        var wsHandler = new WebSocketHandler(sqlDataAccess);
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(wsHandler::onConnect);
+            ws.onMessage(wsHandler::onMessage);
+            ws.onClose(wsHandler::onClose);
+            ws.onError(wsHandler::onError);
+        });
+
     }
 
     public int run(int desiredPort){

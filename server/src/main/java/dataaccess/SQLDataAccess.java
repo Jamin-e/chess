@@ -217,4 +217,33 @@ public class SQLDataAccess implements DataAccess{
         }
     }
 
+    public void updateGame(int gameID, ChessGame game) throws Exception {
+        String json = gson.toJson(game);
+        var sql = "UPDATE game SET game_state = ? WHERE id = ?";
+        try (var conn = DatabaseManager.getConnection();
+        var ps = conn.prepareStatement(sql)){
+            ps.setString(1,json);
+            ps.setInt(2,gameID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public void leaveGame(int gameID, String username) throws Exception{
+        var sql = """
+                UPDATE game
+                SET white_username = CASE WHEN white_username = ? THEN NULL ELSE white_username END,
+                black_username = CASE WHEN black_username = ? THEN NULL ELSE black_username END
+                WHERE id = ?""";
+        try (var conn = DatabaseManager.getConnection();
+        var ps = conn.prepareStatement(sql)){
+            ps.setString(1, username);
+            ps.setString(2, username);
+            ps.setInt(3, gameID);
+            ps.executeUpdate();
+        }catch (SQLException e){
+            throw new Exception(e.getMessage());
+        }
+    }
 }

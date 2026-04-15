@@ -1,6 +1,11 @@
 package ws;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import websocket.ErrorMessage;
+import websocket.LoadGameMessage;
+import websocket.NotificationMessage;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -10,11 +15,7 @@ import java.net.URI;
 public class WebSocketClient {
     private final Gson gson = new Gson();
     private final WebSocketMessageHandler messageHandler;
-
     private Session session;
-
-    private String authToken;
-    private Integer gameID;
     private boolean connected = false;
 
     public WebSocketClient(WebSocketMessageHandler messageHandler){
@@ -23,7 +24,13 @@ public class WebSocketClient {
 
     public void connect(String baseUrl, String authToken, Integer gameID, boolean isPlayer){
         try {
-            URI uri = URI.create(baseUrl + "/ws");
+            String wsBaseUrl = baseUrl;
+            if (wsBaseUrl.startsWith("https://")) {
+                wsBaseUrl = "wss://" + wsBaseUrl.substring("https://".length());
+            } else if (wsBaseUrl.startsWith("http://")) {
+                wsBaseUrl = "ws://" + wsBaseUrl.substring("http://".length());
+            }
+            URI uri = URI.create(wsBaseUrl + "/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
 
@@ -33,10 +40,7 @@ public class WebSocketClient {
                     WebSocketClient.this.session = session;
                     connected = true;
 
-                    session.addMessageHandler((MessageHandler.Whole<String>) raw -> {
-                        ServerMessage message = gson.fromJson(raw, ServerMessage.class);
-                        messageHandler.handle(message);
-                    });
+                    session.addMessageHandler((MessageHandler.Whole<String>) WebSocketClient.this::handleIncoming);
 
                     sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID));
                 }
@@ -81,22 +85,42 @@ public class WebSocketClient {
             session = null;
         }
     }
-    private void handleIncoming(String rawJSON){
-        ServerMessage message = gson.fromJson(rawJSON, ServerMessage.class);
-        messageHandler.handle(message);
+    private void handleIncoming(String rawJson){
+        try {
+            JsonObject obj = JsonParser.parseString(rawJson).getAsJsonObject();
+            if (!obj.has("serverMessageType")) {
+                messageHandler.handle(new ErrorMessage("Missing serverMessageType"));
+                return;
+            }
+            ServerMessage.ServerMessageType type =
+                    gson.fromJson(obj.get("serverMessageType"), ServerMessage.ServerMessageType.class);
+            if (type == null) {
+                messageHandler.handle(new ErrorMessage("Unknown serverMessageType"));
+                return;
+            }
+            ServerMessage message = switch (type) {
+                case LOAD_GAME -> gson.fromJson(rawJson, LoadGameMessage.class);
+                case NOTIFICATION -> gson.fromJson(rawJson, NotificationMessage.class);
+                case ERROR -> gson.fromJson(rawJson, ErrorMessage.class);
+            };
+
+            messageHandler.handle(message);
+        }catch(Exception e){
+            messageHandler.handle(new ErrorMessage("Wbsocket error: "+ e.getMessage()));
+        }
     }
 
-    public boolean isConnected() {
-        return connected;
-    }
-
-    private void onOpen() {
-        connected = true;
-    }
-    private void onClose() {
-        connected = false;
-    }
-    private void onError(Exception e) {
-        // surface or log websocket errors
-    }
+//    public boolean isConnected() {
+//        return connected;
+//    }
+//
+//    private void onOpen() {
+//        connected = true;
+//    }
+//    private void onClose() {
+//        connected = false;
+//    }
+//    private void onError(Exception e) {
+//        // surface or log websocket errors
+//    }
 }

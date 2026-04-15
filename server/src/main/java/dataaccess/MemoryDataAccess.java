@@ -95,6 +95,26 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
+    public void updateGame(int gameID, ChessGame game) throws Exception{
+        GameData existing = games.get(gameID);
+        if(existing == null){
+            throw new Exception("game does not exist");
+        }
+        games.put(gameID, new GameData(existing.gameID(), existing.whiteUsername(), existing.blackUsername(), existing.gameName(), game));
+    }
+
+    public void leaveGame(int gameID, String username) throws Exception{
+        GameData existing = games.get(gameID);
+        if (existing == null) {
+            throw new Exception("game does not exist");
+        }
+        String white = existing.whiteUsername();
+        String black = existing.blackUsername();
+        if (username != null && username.equals(white)) { white = null; }
+        if (username != null && username.equals(black)) { black = null; }
+        games.put(gameID, new GameData(existing.gameID(), white, black, existing.gameName(), existing.game()));
+    }
+
     public Collection<GameData> listGames(){
         return games.values();
     }
